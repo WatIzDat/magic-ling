@@ -12,6 +12,7 @@ namespace Tools.UI.Card
         Camera MainCamera { get; }
         IUiCardHand Hand { get; }
         SpriteRenderer[] Renderers { get; }
+        Canvas[] Canvases { get; }
         SpriteRenderer MyRenderer { get; }
         Collider Collider { get; }
         Rigidbody Rigidbody { get; }

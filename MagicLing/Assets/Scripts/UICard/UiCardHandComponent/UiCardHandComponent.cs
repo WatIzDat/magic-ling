@@ -1,4 +1,5 @@
 ﻿using Extensions;
+using TMPro;
 using UnityEngine;
 
 namespace Tools.UI.Card
@@ -13,6 +14,7 @@ namespace Tools.UI.Card
         #region Components
 
         SpriteRenderer[] IUiCardComponents.Renderers => MyRenderers;
+        Canvas[] IUiCardComponents.Canvases => MyCanvases;
         SpriteRenderer IUiCardComponents.MyRenderer => MyRenderer;
         Collider IUiCardComponents.Collider => MyCollider;
         Rigidbody IUiCardComponents.Rigidbody => MyRigidbody;
@@ -34,10 +36,12 @@ namespace Tools.UI.Card
         public string Name => gameObject.name;
         public UiCardParameters CardConfigsParameters => cardConfigsParameters;
         [SerializeField] public UiCardParameters cardConfigsParameters;
+        [SerializeField] private TMP_Text titleText;
         private UiCardHandFsm Fsm { get; set; }
         private Transform MyTransform { get; set; }
         private Collider MyCollider { get; set; }
         private SpriteRenderer[] MyRenderers { get; set; }
+        private Canvas[] MyCanvases { get; set; }
         private SpriteRenderer MyRenderer { get; set; }
         private Rigidbody MyRigidbody { get; set; }
         private IMouseInput MyInput { get; set; }
@@ -48,6 +52,20 @@ namespace Tools.UI.Card
         public bool IsHovering => Fsm.IsCurrent<UiCardHover>();
         public bool IsDisabled => Fsm.IsCurrent<UiCardDisable>();
         public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
+
+        //public ICard Card { get; set => { } }
+        private ICard card;
+
+        public ICard Card
+        {
+            get { return card; }
+            set 
+            { 
+                card = value;
+                titleText.text = card.Title;
+            }
+        }
+
 
         #endregion
 
@@ -136,6 +154,7 @@ namespace Tools.UI.Card
             MyInput = GetComponent<IMouseInput>();
             Hand = transform.parent.GetComponentInChildren<IUiCardHand>();
             MyRenderers = GetComponentsInChildren<SpriteRenderer>();
+            MyCanvases = GetComponentsInChildren<Canvas>();
             MyRenderer = GetComponent<SpriteRenderer>();
 
             //transform

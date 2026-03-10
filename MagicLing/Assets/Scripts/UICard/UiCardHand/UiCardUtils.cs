@@ -41,7 +41,7 @@ namespace Tools.UI.Card
             for (var i = 0; i < 6; i++)
             {
                 yield return new WaitForSeconds(0.2f);
-                DrawCard();
+                DrawCard(new RuleCard("p", "f"));
             }
         }
 
@@ -52,13 +52,14 @@ namespace Tools.UI.Card
         #region Operations
 
         [Button]
-        public void DrawCard()
+        public void DrawCard(ICard cardType)
         {
             //TODO: Consider replace Instantiate by an Object Pool Pattern
             var cardGo = Instantiate(cardPrefabCs, gameView);
             cardGo.name = "Card_" + Count;
             var card = cardGo.GetComponent<IUiCard>();
             card.transform.position = deckPosition.position;
+            card.Card = cardType;
             Count++;
             CardHand.AddCard(card);
         }
@@ -73,12 +74,12 @@ namespace Tools.UI.Card
             }
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab)) DrawCard();
-            if (Input.GetKeyDown(KeyCode.Space)) PlayCard();
-            if (Input.GetKeyDown(KeyCode.Escape)) Restart();
-        }
+        //private void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Tab)) DrawCard();
+        //    if (Input.GetKeyDown(KeyCode.Space)) PlayCard();
+        //    if (Input.GetKeyDown(KeyCode.Escape)) Restart();
+        //}
 
         public void Restart()
         {

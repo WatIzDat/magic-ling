@@ -39,7 +39,14 @@ namespace Tools.UI.Card
         protected virtual void MakeRenderFirst()
         {
             for (var i = 0; i < Handler.Renderers.Length; i++)
+            {
                 Handler.Renderers[i].sortingOrder = LayerToRenderTop;
+            }
+
+            for (int i = 0; i < Handler.Canvases.Length; i++)
+            {
+                Handler.Canvases[i].sortingOrder = LayerToRenderTop;
+            }
         }
 
 
@@ -49,8 +56,20 @@ namespace Tools.UI.Card
         protected virtual void MakeRenderNormal()
         {
             for (var i = 0; i < Handler.Renderers.Length; i++)
+            {
                 if (Handler.Renderers[i])
+                {
                     Handler.Renderers[i].sortingOrder = LayerToRenderNormal;
+                }
+            }
+
+            for (int i = 0; i < Handler.Canvases.Length; i++)
+            {
+                if (Handler.Canvases[i])
+                {
+                    Handler.Canvases[i].sortingOrder = LayerToRenderNormal;
+                }
+            }
         }
 
         /// <summary>
@@ -75,6 +94,7 @@ namespace Tools.UI.Card
             DisableCollision();
             Handler.Rigidbody.Sleep();
             MakeRenderNormal();
+            // TODO: Change color of panels as well
             foreach (var renderer in Handler.Renderers)
             {
                 var myColor = renderer.color;
