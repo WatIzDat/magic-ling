@@ -37,11 +37,21 @@ namespace Tools.UI.Card
 
         private IEnumerator Start()
         {
+            RuleCard[] cards = new RuleCard[]
+            {
+                new("p", "f"),
+                new("t", "th"),
+                new("a", "e"),
+                new("e", "a"),
+                new("p", "f"),
+                new("p", "f"),
+            };
+
             //starting cards
             for (var i = 0; i < 6; i++)
             {
                 yield return new WaitForSeconds(0.2f);
-                DrawCard(new RuleCard("p", "f"));
+                DrawCard(cards[i]);
             }
         }
 

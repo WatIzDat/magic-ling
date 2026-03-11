@@ -9,4 +9,16 @@
         Pattern = pattern;
         Replacement = replacement;
     }
+
+    public void UpdateMatch(Match match)
+    {
+        for (int i = 0; i < match.Words.Count; i++)
+        {
+            Word newWord = new(
+                match.Words[i].Proto,
+                Rule.ApplyRule(Pattern, Replacement, match.Words[i].Current));
+
+            match.UpdateWord(i, newWord);
+        }
+    }
 }

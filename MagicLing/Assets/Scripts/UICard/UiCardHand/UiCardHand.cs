@@ -11,6 +11,9 @@ namespace Tools.UI.Card
     /// </summary>
     public class UiCardHand : UiCardPile, IUiCardHand
     {
+        [SerializeField]
+        private GameManager gameManager;
+
         //--------------------------------------------------------------------------------------------------------------
 
         #region Properties
@@ -76,6 +79,7 @@ namespace Tools.UI.Card
 
             SelectedCard = null;
             RemoveCard(card);
+            card.Card.UpdateMatch(gameManager.match);
             OnCardPlayed?.Invoke(card);
             EnableCards();
             NotifyPileChange();
