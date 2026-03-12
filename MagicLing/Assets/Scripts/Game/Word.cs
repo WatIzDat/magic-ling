@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public record Word
 {
     public string Proto { get; }
@@ -14,4 +16,14 @@ public record Word
         Proto = protoWord;
         Current = currentWord;
     }
+
+    //public List<Spell> GetSpells()
+    //{
+
+    //}
+
+    //private string[] SplitSyllables()
+    //{
+
+    //}
 }
