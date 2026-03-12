@@ -12,7 +12,7 @@ namespace Tools.UI.Card
     public class UiCardHand : UiCardPile, IUiCardHand
     {
         [SerializeField]
-        private GameManager gameManager;
+        private MatchManager gameManager;
 
         //--------------------------------------------------------------------------------------------------------------
 

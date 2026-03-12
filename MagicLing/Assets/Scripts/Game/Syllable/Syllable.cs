@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 public readonly struct Syllable
 {
@@ -77,6 +78,34 @@ public readonly struct Syllable
         }
 
         return null;
+    }
+
+    //public bool AreAllConsonantsOfNaturalClass(NaturalClass naturalClass)
+    //{
+    //    Regex regex = new($"^{Rule.NaturalClassToRegex[naturalClass]}*$");
+
+    //    return regex.IsMatch(Onset) && regex.IsMatch(Coda);
+    //}
+
+    public bool AreAllConsonantsOfNaturalClasses(params NaturalClass[] naturalClasses)
+    {
+        string regexStr = "";
+
+        for (int i = 0; i < naturalClasses.Length; i++)
+        {
+            NaturalClass naturalClass = naturalClasses[i];
+
+            regexStr += Rule.NaturalClassToRegex[naturalClass];
+
+            if (i < naturalClasses.Length - 1)
+            {
+                regexStr += "|";
+            }
+        }
+
+        Regex regex = new($"^(?:{regexStr})*$");
+
+        return regex.IsMatch(Onset) && regex.IsMatch(Coda);
     }
 
     //public static List<Syllable> Syllabify(string word, SyllableStructure structure)

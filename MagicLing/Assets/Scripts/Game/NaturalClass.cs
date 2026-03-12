@@ -1,5 +1,10 @@
 public enum NaturalClass
 {
     Consonant,
-    Vowel
+    Vowel,
+    Plosive,
+    Fricative,
+    Liquid,
+    Semivowel,
+    Nasal
 }

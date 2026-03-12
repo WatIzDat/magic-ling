@@ -7,6 +7,11 @@ public static class Rule
     {
         { NaturalClass.Consonant, new("[^aeiou]") },
         { NaturalClass.Vowel, new("[aeiou]") },
+        { NaturalClass.Plosive, new("[bcdgkpqt]") },
+        { NaturalClass.Fricative, new("[fhsvxz]") },
+        { NaturalClass.Liquid, new("[lr]") },
+        { NaturalClass.Semivowel, new("[wy]") },
+        { NaturalClass.Nasal, new("[mn]") }
     };
 
     public static string ApplyRule(string pattern, string replacement, string word)

@@ -43,8 +43,8 @@ namespace Tools.UI.Card
                 new("t", "th"),
                 new("a", "e"),
                 new("e", "a"),
-                new("p", "f"),
-                new("p", "f"),
+                new("r", "f"),
+                new("t", "l"),
             };
 
             //starting cards
