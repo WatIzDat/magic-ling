@@ -7,11 +7,19 @@ public class Match
     private readonly List<Word> words = new();
     public ReadOnlyCollection<Word> Words => words.AsReadOnly();
 
+    private Player player;
+
+    private readonly List<Battler> opponents = new();
+    //public ReadOnlyCollection<Battler> Battlers => battlers.AsReadOnly();
+
     public event Action<int, Word> OnWordUpdated;
 
-    public Match(List<Word> words)
+    public Match(Player player, List<Battler> opponents)
     {
-        this.words = words;
+        this.player = player;
+        this.opponents = opponents;
+
+        words = player.Words;
     }
 
     public void UpdateWord(int index, Word word)
@@ -19,5 +27,16 @@ public class Match
         words[index] = word;
 
         OnWordUpdated?.Invoke(index, word);
+    }
+
+    public void CastSpellsOnOpponents(List<Spell> spells)
+    {
+        foreach (Battler opponent in opponents)
+        {
+            foreach (Spell spell in spells)
+            {
+                opponent.TakeDamage(player, spell.Damage);
+            }
+        }
     }
 }

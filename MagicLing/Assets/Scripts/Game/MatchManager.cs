@@ -8,7 +8,12 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    public List<TMP_Text> wordText;
+    private Player player = new(new List<Word>() { new("pater") }, 100f, 2f);
+
+    private List<Spell> spells;
+
+    [SerializeField]
+    private List<TMP_Text> wordText;
 
     //private void Awake()
     //{
@@ -22,7 +27,9 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
-        match = new(new List<Word>() { new("pater") });
+        List<Battler> battlers = new() { new(new List<Word>() { new("enemy") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Fire, 0.5f } }) };
+
+        match = new(player, battlers);
 
         for (int i = 0; i < match.Words.Count; i++)
         {
@@ -40,11 +47,19 @@ public class MatchManager : MonoBehaviour
         match.OnWordUpdated -= OnMatchWordUpdated;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            EndTurn();
+        }
+    }
+
     private void OnMatchWordUpdated(int index, Word word)
     {
         //wordText[index].text = word.Current;
 
-        List<Spell> spells = GetSpells(word.Current);
+        spells = GetSpells(word.Current);
 
         string newText = "";
 
@@ -54,6 +69,11 @@ public class MatchManager : MonoBehaviour
         }
 
         wordText[index].text = newText;
+    }
+
+    private void EndTurn()
+    {
+        match.CastSpellsOnOpponents(spells);
     }
 
     private List<Spell> GetSpells(string word)

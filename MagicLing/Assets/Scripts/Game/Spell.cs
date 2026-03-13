@@ -5,12 +5,14 @@ public record Spell
     public int StartIndex { get; }
     public int EndIndex { get; }
     public Color Color { get; }
+    public Damage Damage { get; }
 
-    public Spell(int startIndex, int endIndex, Color color)
+    public Spell(int startIndex, int endIndex, Color color, Damage damage)
     {
         StartIndex = startIndex;
         EndIndex = endIndex;
         Color = color;
+        Damage = damage;
     }
 
     public static Spell CreateSpellOfSyllable(int wordPos, Syllable syllable)
@@ -35,22 +37,22 @@ public record Spell
 
     public static Spell CreateFireSpell(int startIndex, int endIndex)
     {
-        return new(startIndex, endIndex, Color.red);
+        return new(startIndex, endIndex, Color.red, new Damage(DamageType.Fire));
     }
 
     public static Spell CreateGrassSpell(int startIndex, int endIndex)
     {
-        return new(startIndex, endIndex, Color.green);
+        return new(startIndex, endIndex, Color.green, new Damage(DamageType.Grass));
     }
 
     public static Spell CreateWaterSpell(int startIndex, int endIndex)
     {
-        return new(startIndex, endIndex, Color.blue);
+        return new(startIndex, endIndex, Color.blue, new Damage(DamageType.Water));
     }
 
     public static Spell CreatePhysicalSpell(int startIndex, int endIndex)
     {
-        return new(startIndex, endIndex, Color.black);
+        return new(startIndex, endIndex, Color.black, new Damage(DamageType.Physical));
     }
 
     public static bool IsFireSyllable(Syllable syllable)
