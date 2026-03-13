@@ -25,4 +25,4 @@ MonoBehaviour:
   movementSpeed: 4
   scaleSpeed: 8
   startSizeWhenDraw: 0.05
-  discardedSize: 0.5
+  discardedSize: 0
