@@ -15,17 +15,19 @@ public class Battler
         { DamageType.Water, 0f }
     };
     public List<Word> Words { get; protected set; }
+    public List<Effect> Effects { get; protected set; }
 
     public delegate void OnDamageTakenEventHandler(Battler hitBattler, Battler attackBattler, Damage damage);
 
     public event OnDamageTakenEventHandler OnDamageTaken;
 
-    public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null)
+    public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null)
     {
         Health = health;
         MaxHealth = health;
         Attack = attack;
         Words = words;
+        Effects = effects ?? new();
 
         if (resistances != null)
         {
@@ -42,6 +44,14 @@ public class Battler
 
         OnDamageTaken?.Invoke(this, battler, damage);
 
-        Debug.Log(Health);
+        //Debug.Log(Health);
+    }
+
+    public void EndTurn()
+    {
+        foreach (Effect effect in Effects)
+        {
+            effect.DealDamage(this);
+        }
     }
 }

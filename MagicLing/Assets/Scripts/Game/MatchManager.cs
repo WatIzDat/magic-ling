@@ -10,7 +10,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("pater") }, 100f, 2f);
+    private Player player = new(new List<Word>() { new("pater") }, 100f, 1f);
 
     private List<Spell> spells;
 
@@ -37,7 +37,35 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
-        List<Battler> battlers = new() { new(new List<Word>() { new("enemy") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Fire, 0.5f } }), new(new List<Word>() { new("test") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Grass, 0.5f } }) };
+        List<Battler> battlers = new() 
+        {
+            new(
+                new List<Word>() 
+                {
+                    new("enemy") 
+                },
+                20f,
+                1f,
+                new Dictionary<DamageType, float>()
+                {
+                    { DamageType.Fire, 0.5f } 
+                },
+                new List<Effect>() 
+                {
+                    Effect.CreateRuptureEffect(3, player) 
+                }),
+            new(
+                new List<Word>() 
+                { 
+                    new("test") 
+                },
+                20f,
+                1f,
+                new Dictionary<DamageType, float>() 
+                { 
+                    { DamageType.Grass, 0.5f } 
+                })
+        };
 
         match = new(player, battlers);
 
@@ -68,7 +96,8 @@ public class MatchManager : MonoBehaviour
     {
         match.OnWordUpdated += OnMatchWordUpdated;
 
-        foreach (Battler battler in match.Battlers) {
+        foreach (Battler battler in match.Battlers)
+        {
             battler.OnDamageTaken += OnOpponentDamageTaken;
         }
     }
@@ -77,7 +106,8 @@ public class MatchManager : MonoBehaviour
     {
         match.OnWordUpdated -= OnMatchWordUpdated;
 
-        foreach (Battler battler in match.Battlers) {
+        foreach (Battler battler in match.Battlers)
+        {
             battler.OnDamageTaken -= OnOpponentDamageTaken;
         }
     }
@@ -86,7 +116,7 @@ public class MatchManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            EndTurn();
+            match.EndTurn(spells);
         }
     }
 
@@ -109,11 +139,6 @@ public class MatchManager : MonoBehaviour
         }
 
         wordText[index].text = newText;
-    }
-
-    private void EndTurn()
-    {
-        match.CastSpellsOnOpponents(spells);
     }
 
     private List<Spell> GetSpells(string word)

@@ -29,6 +29,16 @@ public class Match
         OnWordUpdated?.Invoke(index, word);
     }
 
+    public void EndTurn(List<Spell> playerSpells)
+    {
+        foreach (Battler battler in opponents)
+        {
+            battler.EndTurn();
+        }
+
+        //CastSpellsOnOpponents(playerSpells);
+    }
+
     public void CastSpellsOnOpponents(List<Spell> spells)
     {
         foreach (Battler opponent in opponents)
