@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MatchManager : MonoBehaviour
 {
@@ -15,6 +17,14 @@ public class MatchManager : MonoBehaviour
     [SerializeField]
     private List<TMP_Text> wordText;
 
+    [SerializeField]
+    private RectTransform healthBarPrefab;
+
+    [SerializeField]
+    private Canvas canvas;
+
+    private Dictionary<Battler, Slider> opponentHealthSliders;
+
     //private void Awake()
     //{
     //    List<Syllable> syllables = Syllable.Syllabify("abracadabra", SyllableStructure.Parse("(C)V(C)"));
@@ -27,7 +37,7 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
-        List<Battler> battlers = new() { new(new List<Word>() { new("enemy") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Fire, 0.5f } }) };
+        List<Battler> battlers = new() { new(new List<Word>() { new("enemy") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Fire, 0.5f } }), new(new List<Word>() { new("test") }, 10f, 1f, new Dictionary<DamageType, float>() { { DamageType.Grass, 0.5f } }) };
 
         match = new(player, battlers);
 
@@ -35,16 +45,41 @@ public class MatchManager : MonoBehaviour
         {
             OnMatchWordUpdated(i, match.Words[i]);
         }
+
+        List<Slider> healthSliders = new();
+
+        for (int i = 0; i < battlers.Count; i++)
+        {
+            GameObject healthSlider = Instantiate(healthBarPrefab.gameObject, canvas.transform);
+
+            Debug.Log(healthBarPrefab.rect.height);
+
+            RectTransform rectTransform = healthSlider.GetComponent<RectTransform>();
+
+            rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * healthBarPrefab.rect.height), 0f);
+
+            healthSliders.Add(healthSlider.GetComponent<Slider>());
+        }
+
+        opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
     }
 
     private void OnEnable()
     {
         match.OnWordUpdated += OnMatchWordUpdated;
+
+        foreach (Battler battler in match.Battlers) {
+            battler.OnDamageTaken += OnOpponentDamageTaken;
+        }
     }
 
     private void OnDisable()
     {
         match.OnWordUpdated -= OnMatchWordUpdated;
+
+        foreach (Battler battler in match.Battlers) {
+            battler.OnDamageTaken -= OnOpponentDamageTaken;
+        }
     }
 
     private void Update()
@@ -53,6 +88,11 @@ public class MatchManager : MonoBehaviour
         {
             EndTurn();
         }
+    }
+
+    private void OnOpponentDamageTaken(Battler hitBattler, Battler attackBattler, Damage damage)
+    {
+        opponentHealthSliders[hitBattler].value = hitBattler.Health / hitBattler.MaxHealth;
     }
 
     private void OnMatchWordUpdated(int index, Word word)

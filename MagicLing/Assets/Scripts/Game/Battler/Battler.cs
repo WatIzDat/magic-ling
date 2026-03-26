@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Battler
 {
     public float Health { get; protected set; }
+    public float MaxHealth { get; protected set; }
     public float Attack { get; protected set; }
     public Dictionary<DamageType, float> Resistances { get; protected set; } = new()
     {
@@ -14,9 +16,14 @@ public class Battler
     };
     public List<Word> Words { get; protected set; }
 
+    public delegate void OnDamageTakenEventHandler(Battler hitBattler, Battler attackBattler, Damage damage);
+
+    public event OnDamageTakenEventHandler OnDamageTaken;
+
     public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null)
     {
         Health = health;
+        MaxHealth = health;
         Attack = attack;
         Words = words;
 
@@ -32,6 +39,8 @@ public class Battler
     public void TakeDamage(Battler battler, Damage damage)
     {
         Health -= damage.Amount * battler.Attack * (1f - Resistances[damage.DamageType]);
+
+        OnDamageTaken?.Invoke(this, battler, damage);
 
         Debug.Log(Health);
     }

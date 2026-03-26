@@ -10,7 +10,7 @@ public class Match
     private Player player;
 
     private readonly List<Battler> opponents = new();
-    //public ReadOnlyCollection<Battler> Battlers => battlers.AsReadOnly();
+    public ReadOnlyCollection<Battler> Battlers => opponents.AsReadOnly();
 
     public event Action<int, Word> OnWordUpdated;
 
