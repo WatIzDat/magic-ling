@@ -36,7 +36,7 @@ public class Match
             battler.EndTurn();
         }
 
-        //CastSpellsOnOpponents(playerSpells);
+        CastSpellsOnOpponents(playerSpells);
     }
 
     public void CastSpellsOnOpponents(List<Spell> spells)

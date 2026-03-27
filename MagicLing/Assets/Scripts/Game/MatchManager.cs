@@ -18,12 +18,15 @@ public class MatchManager : MonoBehaviour
     private List<TMP_Text> wordText;
 
     [SerializeField]
-    private RectTransform healthBarPrefab;
+    private RectTransform opponentPrefab;
 
     [SerializeField]
     private Canvas canvas;
 
     private Dictionary<Battler, Slider> opponentHealthSliders;
+
+    [SerializeField]
+    private GameObject opponentsParent;
 
     //private void Awake()
     //{
@@ -64,7 +67,29 @@ public class MatchManager : MonoBehaviour
                 new Dictionary<DamageType, float>() 
                 { 
                     { DamageType.Grass, 0.5f } 
-                })
+                }),
+            new(
+                new List<Word>() 
+                { 
+                    new("abc") 
+                },
+                20f,
+                1f,
+                new Dictionary<DamageType, float>() 
+                { 
+                    { DamageType.Grass, 0.5f } 
+                }),
+            new(
+                new List<Word>() 
+                { 
+                    new("def") 
+                },
+                20f,
+                1f,
+                new Dictionary<DamageType, float>() 
+                { 
+                    { DamageType.Grass, 0.5f } 
+                }),
         };
 
         match = new(player, battlers);
@@ -78,15 +103,35 @@ public class MatchManager : MonoBehaviour
 
         for (int i = 0; i < battlers.Count; i++)
         {
-            GameObject healthSlider = Instantiate(healthBarPrefab.gameObject, canvas.transform);
+            GameObject opponentObj = Instantiate(opponentPrefab.gameObject, opponentsParent.transform);
 
-            Debug.Log(healthBarPrefab.rect.height);
+            //Debug.Log(healthBarPrefab.rect.height);
 
-            RectTransform rectTransform = healthSlider.GetComponent<RectTransform>();
+            TMP_Text text = opponentObj.GetComponentInChildren<TMP_Text>();
+            text.text = battlers[i].Words[0].Current;
 
-            rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * healthBarPrefab.rect.height), 0f);
+            RectTransform rectTransform = opponentObj.GetComponent<RectTransform>();
 
-            healthSliders.Add(healthSlider.GetComponent<Slider>());
+            // note: only works for battlers length 4 or less
+            if (i == 1)
+            {
+                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                rectTransform.anchorMax = new Vector2(1f, 1f);
+            }
+            else if (i == 2)
+            {
+                rectTransform.anchorMin = new Vector2(0f, 0f);
+                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            }
+            else if (i == 3)
+            {
+                rectTransform.anchorMin = new Vector2(0.5f, 0f);
+                rectTransform.anchorMax = new Vector2(1f, 0.5f);
+            }
+
+            //rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * healthBarPrefab.rect.height), 0f);
+
+            healthSliders.Add(opponentObj.GetComponentInChildren<Slider>());
         }
 
         opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
