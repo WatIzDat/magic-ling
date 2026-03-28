@@ -23,10 +23,22 @@ public class MatchManager : MonoBehaviour
     [SerializeField]
     private Canvas canvas;
 
-    private Dictionary<Battler, Slider> opponentHealthSliders;
+    private readonly Dictionary<Battler, OpponentInfo> opponents = new();
 
     [SerializeField]
     private GameObject opponentsParent;
+
+    [SerializeField]
+    private List<EffectTypeToIconMapping> effectIcons;
+
+    private Dictionary<EffectType, GameObject> effectIconsDictionary;
+
+    [System.Serializable]
+    private class EffectTypeToIconMapping
+    {
+        public EffectType type;
+        public GameObject icon;
+    }
 
     //private void Awake()
     //{
@@ -40,6 +52,8 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
+        effectIconsDictionary = new(effectIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
+
         List<Battler> battlers = new() 
         {
             new(
@@ -55,7 +69,8 @@ public class MatchManager : MonoBehaviour
                 },
                 new List<Effect>() 
                 {
-                    Effect.CreateRuptureEffect(3, player) 
+                    Effect.CreateRuptureEffect(3, player),
+                    Effect.CreateBurnEffect(2, player)
                 }),
             new(
                 new List<Word>() 
@@ -89,6 +104,10 @@ public class MatchManager : MonoBehaviour
                 new Dictionary<DamageType, float>() 
                 { 
                     { DamageType.Grass, 0.5f } 
+                },
+                new List<Effect>()
+                {
+                    Effect.CreateSinkingEffect(3, player)
                 }),
         };
 
@@ -131,10 +150,13 @@ public class MatchManager : MonoBehaviour
 
             //rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * healthBarPrefab.rect.height), 0f);
 
-            healthSliders.Add(opponentObj.GetComponentInChildren<Slider>());
+            //healthSliders.Add(opponentObj.GetComponentInChildren<Slider>());
+
+            opponents[battlers[i]] = new OpponentInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
+            opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
         }
 
-        opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
+        //opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
     }
 
     private void OnEnable()
@@ -161,13 +183,48 @@ public class MatchManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            match.EndTurn(spells);
+            EndTurn();
         }
+    }
+
+    private void EndTurn()
+    {
+        match.EndTurn(spells);
+
+        foreach (Battler battler in match.Battlers)
+        {
+            opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
+        }
+    }
+
+    private Dictionary<Effect, GameObject> InstantiateEffectIcons(List<Effect> effects, OpponentInfo opponentInfo)
+    {
+        Dictionary<Effect, GameObject> effectIcons = new();
+
+        int i = 0;
+
+        foreach (Effect effect in effects)
+        {
+            if (opponentInfo.EffectIcons.ContainsKey(effect))
+                Destroy(opponentInfo.EffectIcons[effect]);
+
+            GameObject newIcon = Instantiate(effectIconsDictionary[effect.EffectType], opponentInfo.Object.transform);
+
+            RectTransform rectTransform = newIcon.GetComponent<RectTransform>();
+
+            rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * rectTransform.rect.height), 0f);
+
+            effectIcons[effect] = newIcon;
+
+            i++;
+        }
+
+        return effectIcons;
     }
 
     private void OnOpponentDamageTaken(Battler hitBattler, Battler attackBattler, Damage damage)
     {
-        opponentHealthSliders[hitBattler].value = hitBattler.Health / hitBattler.MaxHealth;
+        opponents[hitBattler].HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
     }
 
     private void OnMatchWordUpdated(int index, Word word)
