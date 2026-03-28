@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +9,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("pater") }, 100f, 1f);
+    private Player player = new(new List<Word>() { new("ʦaʦ") }, 100f, 1f);
 
     private List<Spell> spells;
 
@@ -237,7 +236,8 @@ public class MatchManager : MonoBehaviour
 
         foreach (Spell spell in spells)
         {
-            newText += $"<color=#{spell.Color.ToHexString()}>{word.Current[spell.StartIndex..spell.EndIndex]}";
+            Debug.Log(spell.Color);
+            newText += $"<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.StartIndex..spell.EndIndex]}";
         }
 
         wordText[index].text = newText;
@@ -253,7 +253,7 @@ public class MatchManager : MonoBehaviour
 
         foreach (Syllable syllable in syllables)
         {
-            result.Add(Spell.CreateSpellOfSyllable(wordPos, syllable));
+            result.Add(Spell.CreateSpellOfSyllable(wordPos, syllable, player));
 
             wordPos += syllable.Full.Length;
         }

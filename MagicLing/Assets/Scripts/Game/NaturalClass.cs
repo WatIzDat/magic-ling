@@ -6,5 +6,6 @@ public enum NaturalClass
     Fricative,
     Liquid,
     Semivowel,
-    Nasal
+    Nasal,
+    Affricate
 }

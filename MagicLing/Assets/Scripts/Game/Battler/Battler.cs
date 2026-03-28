@@ -40,11 +40,19 @@ public class Battler
 
     public void TakeDamage(Battler battler, Damage damage)
     {
+        if (damage == null)
+            return;
+
         Health -= damage.Amount * battler.Attack * (1f - Resistances[damage.DamageType]);
 
         OnDamageTaken?.Invoke(this, battler, damage);
 
         //Debug.Log(Health);
+    }
+
+    public void AddEffect(Effect effect)
+    {
+        Effects.Add(effect);
     }
 
     public void EndTurn()

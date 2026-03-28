@@ -6,6 +6,15 @@ public record Spell
     public int EndIndex { get; }
     public Color Color { get; }
     public Damage Damage { get; }
+    public Effect Effect { get; }
+
+    public Spell(int startIndex, int endIndex, Color color, Effect effect)
+    {
+        StartIndex = startIndex;
+        EndIndex = endIndex;
+        Color = color;
+        Effect = effect;
+    }
 
     public Spell(int startIndex, int endIndex, Color color, Damage damage)
     {
@@ -15,7 +24,7 @@ public record Spell
         Damage = damage;
     }
 
-    public static Spell CreateSpellOfSyllable(int wordPos, Syllable syllable)
+    public static Spell CreateSpellOfSyllable(int wordPos, Syllable syllable, Player player)
     {
         if (IsFireSyllable(syllable))
         {
@@ -28,6 +37,10 @@ public record Spell
         else if (IsWaterSyllable(syllable))
         {
             return CreateWaterSpell(wordPos, wordPos + syllable.Full.Length);
+        }
+        else if (IsRuptureSyllable(syllable))
+        {
+            return CreateRuptureSpell(wordPos, wordPos + syllable.Full.Length, player);
         }
         else
         {
@@ -55,6 +68,11 @@ public record Spell
         return new(startIndex, endIndex, Color.black, new Damage(DamageType.Physical));
     }
 
+    public static Spell CreateRuptureSpell(int startIndex, int endIndex, Player player)
+    {
+        return new(startIndex, endIndex, new Color(0.024f, 0.251f, 0.169f), Effect.CreateRuptureEffect(3, player));
+    }
+
     public static bool IsFireSyllable(Syllable syllable)
     {
         return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Plosive, NaturalClass.Nasal);
@@ -68,5 +86,10 @@ public record Spell
     public static bool IsWaterSyllable(Syllable syllable)
     {
         return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Liquid, NaturalClass.Semivowel, NaturalClass.Nasal);
+    }
+
+    public static bool IsRuptureSyllable(Syllable syllable)
+    {
+        return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Affricate, NaturalClass.Nasal);
     }
 }

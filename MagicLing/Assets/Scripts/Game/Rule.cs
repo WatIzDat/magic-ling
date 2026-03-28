@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public static class Rule
@@ -11,7 +11,8 @@ public static class Rule
         { NaturalClass.Fricative, new("[fhsvxz]") },
         { NaturalClass.Liquid, new("[lr]") },
         { NaturalClass.Semivowel, new("[wy]") },
-        { NaturalClass.Nasal, new("[mn]") }
+        { NaturalClass.Nasal, new("[mn]") },
+        { NaturalClass.Affricate, new("[ʦ]") }
     };
 
     public static string ApplyRule(string pattern, string replacement, string word)
