@@ -9,7 +9,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("ʦaʦ") }, 100f, 1f);
+    private Player player = new(new List<Word>() { new("pater") }, 100f, 1f);
 
     private List<Spell> spells;
 
@@ -200,12 +200,22 @@ public class MatchManager : MonoBehaviour
     {
         Dictionary<Effect, GameObject> effectIcons = new();
 
+        foreach ((Effect _, GameObject obj) in opponentInfo.EffectIcons)
+        {
+            Destroy(obj);
+        }
+
         int i = 0;
 
         foreach (Effect effect in effects)
         {
-            if (opponentInfo.EffectIcons.ContainsKey(effect))
-                Destroy(opponentInfo.EffectIcons[effect]);
+            //Debug.Log(effect);
+            //if (opponentInfo.EffectIcons.ContainsKey(effect))
+            //{
+            //    Destroy(opponentInfo.EffectIcons[effect]);
+
+            //    if (!effects.Contains(effect))
+            //}
 
             GameObject newIcon = Instantiate(effectIconsDictionary[effect.EffectType], opponentInfo.Object.transform);
 

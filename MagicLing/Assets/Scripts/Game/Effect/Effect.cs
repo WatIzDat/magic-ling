@@ -1,11 +1,12 @@
 using System;
+using UnityEngine;
 
 public class Effect
 {
     public int Stacks { get; private set; }
     public int MaxStacks { get; private set; }
     public EffectType EffectType { get; private set; }
-    public Action<Battler> DealDamage { get; private set; }
+    private Action<Battler> DealDamage { get; set; }
 
     //private Effect(int stacks, EffectType effectType, Action<Battler> dealDamage)
     //{
@@ -14,6 +15,18 @@ public class Effect
     //    EffectType = effectType;
     //    DealDamage = dealDamage;
     //}
+
+    public void EndTurn(Battler battler)
+    {
+        DealDamage(battler);
+
+        if (Stacks <= 0)
+        {
+            Debug.LogError("This effect has 0 stacks, it should be removed");
+        }
+
+        Stacks--;
+    }
 
     public static Effect CreateBurnEffect(int stacks, Battler otherBattler)
     {
@@ -38,11 +51,7 @@ public class Effect
             EffectType = EffectType.Rupture
         };
 
-        effect.DealDamage = battler =>
-        {
-            battler.TakeDamage(otherBattler, new Damage(DamageType.Grass, effect.Stacks));
-            effect.Stacks--;
-        };
+        effect.DealDamage = battler => battler.TakeDamage(otherBattler, new Damage(DamageType.Grass, effect.Stacks));
 
         return effect;
     }
@@ -56,11 +65,7 @@ public class Effect
             EffectType = EffectType.Sinking
         };
 
-        effect.DealDamage = battler =>
-        {
-            battler.TakeDamage(otherBattler, new Damage(DamageType.Water, effect.MaxStacks - effect.Stacks + 1));
-            effect.Stacks--;
-        };
+        effect.DealDamage = battler => battler.TakeDamage(otherBattler, new Damage(DamageType.Water, effect.MaxStacks - effect.Stacks + 1));
 
         return effect;
     }

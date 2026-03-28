@@ -52,14 +52,23 @@ public class Battler
 
     public void AddEffect(Effect effect)
     {
+        if (effect == null)
+            return;
+
         Effects.Add(effect);
     }
 
     public void EndTurn()
     {
-        foreach (Effect effect in Effects)
+        for (int i = Effects.Count - 1; i >= 0; i--)
         {
-            effect.DealDamage(this);
+            Effects[i].EndTurn(this);
+
+            if (Effects[i].Stacks <= 0)
+            {
+                Debug.Log("removed");
+                Effects.RemoveAt(i);
+            }
         }
     }
 }
