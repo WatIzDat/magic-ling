@@ -223,6 +223,8 @@ public class MatchManager : MonoBehaviour
 
             rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * rectTransform.rect.height), 0f);
 
+            newIcon.GetComponentInChildren<TMP_Text>().text = effect.Stacks.ToString();
+
             effectIcons[effect] = newIcon;
 
             i++;
