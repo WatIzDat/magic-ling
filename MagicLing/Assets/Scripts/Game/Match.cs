@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 public class Match
 {
@@ -10,7 +11,7 @@ public class Match
     private Player player;
 
     private readonly List<Battler> opponents = new();
-    public ReadOnlyCollection<Battler> Battlers => opponents.AsReadOnly();
+    public ReadOnlyCollection<Battler> Opponents => opponents.AsReadOnly();
 
     public event Action<int, Word> OnWordUpdated;
 
@@ -19,7 +20,17 @@ public class Match
         this.player = player;
         this.opponents = opponents;
 
+        foreach (Battler battler in opponents)
+        {
+            battler.OnDeath += OnOpponentDeath;
+        }
+
         words = player.Words;
+    }
+
+    private void OnOpponentDeath(Battler battler)
+    {
+        opponents.Remove(battler);
     }
 
     public void UpdateWord(int index, Word word)
@@ -31,7 +42,8 @@ public class Match
 
     public void EndTurn(List<Spell> playerSpells)
     {
-        foreach (Battler battler in opponents)
+        // clone opponents list to prevent modification during iteration
+        foreach (Battler battler in opponents.ToList())
         {
             battler.EndTurn();
         }
@@ -41,7 +53,8 @@ public class Match
 
     public void CastSpellsOnOpponents(List<Spell> spells)
     {
-        foreach (Battler opponent in opponents)
+        // clone opponents list to prevent modification during iteration
+        foreach (Battler opponent in opponents.ToList())
         {
             foreach (Spell spell in spells)
             {

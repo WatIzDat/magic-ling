@@ -18,8 +18,10 @@ public class Battler
     public List<Effect> Effects { get; protected set; }
 
     public delegate void OnDamageTakenEventHandler(Battler hitBattler, Battler attackBattler, Damage damage);
+    public delegate void OnDeathEventHandler(Battler battler);
 
     public event OnDamageTakenEventHandler OnDamageTaken;
+    public event OnDeathEventHandler OnDeath;
 
     public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null)
     {
@@ -46,6 +48,11 @@ public class Battler
         Health -= damage.Amount * battler.Attack * (1f - Resistances[damage.DamageType]);
 
         OnDamageTaken?.Invoke(this, battler, damage);
+
+        if (Health <= 0f)
+        {
+            OnDeath?.Invoke(this);
+        }
 
         //Debug.Log(Health);
     }

@@ -162,9 +162,10 @@ public class MatchManager : MonoBehaviour
     {
         match.OnWordUpdated += OnMatchWordUpdated;
 
-        foreach (Battler battler in match.Battlers)
+        foreach (Battler battler in match.Opponents)
         {
             battler.OnDamageTaken += OnOpponentDamageTaken;
+            battler.OnDeath += OnOpponentDeath;
         }
     }
 
@@ -172,9 +173,10 @@ public class MatchManager : MonoBehaviour
     {
         match.OnWordUpdated -= OnMatchWordUpdated;
 
-        foreach (Battler battler in match.Battlers)
+        foreach (Battler battler in match.Opponents)
         {
             battler.OnDamageTaken -= OnOpponentDamageTaken;
+            battler.OnDeath -= OnOpponentDeath;
         }
     }
 
@@ -190,7 +192,7 @@ public class MatchManager : MonoBehaviour
     {
         match.EndTurn(spells);
 
-        foreach (Battler battler in match.Battlers)
+        foreach (Battler battler in match.Opponents)
         {
             opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
         }
@@ -236,6 +238,11 @@ public class MatchManager : MonoBehaviour
     private void OnOpponentDamageTaken(Battler hitBattler, Battler attackBattler, Damage damage)
     {
         opponents[hitBattler].HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
+    }
+
+    private void OnOpponentDeath(Battler battler)
+    {
+        Destroy(opponents[battler].Object);
     }
 
     private void OnMatchWordUpdated(int index, Word word)
