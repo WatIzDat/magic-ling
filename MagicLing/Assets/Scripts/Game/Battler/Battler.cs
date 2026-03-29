@@ -55,6 +55,16 @@ public class Battler
         if (effect == null)
             return;
 
+        for (int i = 0; i < Effects.Count; i++)
+        {
+            if (Effects[i].EffectType == effect.EffectType)
+            {
+                Effects[i].AddStacks(effect.Stacks, effect.MaxStacks);
+
+                return;
+            }
+        }
+
         Effects.Add(effect);
     }
 

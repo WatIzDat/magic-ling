@@ -16,6 +16,18 @@ public class Effect
     //    DealDamage = dealDamage;
     //}
 
+    public Effect()
+    {
+    }
+
+    public Effect(Effect original)
+    {
+        Stacks = original.Stacks;
+        MaxStacks = original.MaxStacks;
+        EffectType = original.EffectType;
+        DealDamage = original.DealDamage;
+    }
+
     public void EndTurn(Battler battler)
     {
         DealDamage(battler);
@@ -26,6 +38,11 @@ public class Effect
         }
 
         Stacks--;
+    }
+
+    public void AddStacks(int stacks, int maxStacks)
+    {
+        Stacks = Mathf.Clamp(Stacks + stacks, 0, Mathf.Max(MaxStacks, maxStacks));
     }
 
     public static Effect CreateBurnEffect(int stacks, Battler otherBattler)

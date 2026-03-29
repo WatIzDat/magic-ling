@@ -9,7 +9,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("pater") }, 100f, 1f);
+    private Player player = new(new List<Word>() { new("ʦaʦ") }, 100f, 1f);
 
     private List<Spell> spells;
 

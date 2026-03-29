@@ -45,7 +45,7 @@ public class Match
         {
             foreach (Spell spell in spells)
             {
-                opponent.AddEffect(spell.Effect);
+                opponent.AddEffect(new Effect(spell.Effect));
                 opponent.TakeDamage(player, spell.Damage);
             }
         }
