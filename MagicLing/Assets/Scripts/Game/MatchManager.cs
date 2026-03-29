@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Tools.UI.Card;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("ʦaʣrerɾi") });
+    private Player player = new(new List<Word>() { new("ʦaʣrerɾipater") });
 
     private List<Spell> spells;
 
@@ -63,6 +64,9 @@ public class MatchManager : MonoBehaviour
     private GameObject playerObject;
 
     private BattlerUIInfo playerInfo;
+
+    [SerializeField]
+    private UiCardUtils cardUtils;
 
     //private void Awake()
     //{
@@ -139,7 +143,7 @@ public class MatchManager : MonoBehaviour
             //    }),
         };
 
-        match = new(player, battlers);
+        match = new(player, battlers, player.Cards.GetRange(0, 6));
 
         for (int i = 0; i < match.Words.Count; i++)
         {
@@ -190,9 +194,18 @@ public class MatchManager : MonoBehaviour
         //opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
     }
 
+    private void Start()
+    {
+        foreach (GameCard card in match.Hand)
+        {
+            OnMatchCardDrawn(card);
+        }
+    }
+
     private void OnEnable()
     {
         match.OnWordUpdated += OnMatchWordUpdated;
+        match.OnCardDrawn += OnMatchCardDrawn;
 
         foreach (Battler battler in match.Opponents)
         {
@@ -206,6 +219,7 @@ public class MatchManager : MonoBehaviour
     private void OnDisable()
     {
         match.OnWordUpdated -= OnMatchWordUpdated;
+        match.OnCardDrawn -= OnMatchCardDrawn;
 
         foreach (Battler battler in match.Opponents)
         {
@@ -356,6 +370,11 @@ public class MatchManager : MonoBehaviour
         }
 
         wordText[index].text = newText;
+    }
+
+    private void OnMatchCardDrawn(GameCard card)
+    {
+        cardUtils.DrawCard(card);
     }
 
     private List<Spell> GetSpells(string word)

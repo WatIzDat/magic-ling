@@ -8,7 +8,7 @@ namespace Tools.UI.Card
         bool IsHovering { get; }
         bool IsDisabled { get; }
         bool IsPlayer { get; }
-        ICard Card { get; set; }
+        GameCard Card { get; set; }
         void Disable();
         void Enable();
         void Select();

@@ -35,25 +35,25 @@ namespace Tools.UI.Card
             CardHand = transform.parent.GetComponentInChildren<UiCardHand>();
         }
 
-        private IEnumerator Start()
-        {
-            RuleCard[] cards = new RuleCard[]
-            {
-                new("p", "f"),
-                new("t", "th"),
-                new("a", "e"),
-                new("e", "a"),
-                new("r", "f"),
-                new("t", "l"),
-            };
+        //private IEnumerator Start()
+        //{
+            //RuleCard[] cards = new RuleCard[]
+            //{
+            //    new("p", "f"),
+            //    new("t", "th"),
+            //    new("a", "e"),
+            //    new("e", "a"),
+            //    new("r", "f"),
+            //    new("t", "l"),
+            //};
 
-            //starting cards
-            for (var i = 0; i < 6; i++)
-            {
-                yield return new WaitForSeconds(0.2f);
-                DrawCard(cards[i]);
-            }
-        }
+            ////starting cards
+            //for (var i = 0; i < 6; i++)
+            //{
+            //    yield return new WaitForSeconds(0.2f);
+            //    DrawCard(cards[i]);
+            //}
+        //}
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace Tools.UI.Card
         #region Operations
 
         [Button]
-        public void DrawCard(ICard cardType)
+        public void DrawCard(GameCard cardType)
         {
             //TODO: Consider replace Instantiate by an Object Pool Pattern
             var cardGo = Instantiate(cardPrefabCs, gameView);

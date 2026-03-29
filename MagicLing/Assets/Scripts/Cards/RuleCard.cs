@@ -1,8 +1,8 @@
-﻿public class RuleCard : ICard
+﻿public class RuleCard : GameCard
 {
     public string Pattern { get; }
     public string Replacement { get; }
-    public string Title => $"{Pattern} → {Replacement}";
+    public override string Title => $"{Pattern} → {Replacement}";
 
     public RuleCard(string pattern, string replacement)
     {
@@ -10,7 +10,7 @@
         Replacement = replacement;
     }
 
-    public void UpdateMatch(Match match)
+    public override void UpdateMatch(Match match)
     {
         for (int i = 0; i < match.Words.Count; i++)
         {
@@ -20,5 +20,7 @@
 
             match.UpdateWord(i, newWord);
         }
+
+        base.UpdateMatch(match);
     }
 }

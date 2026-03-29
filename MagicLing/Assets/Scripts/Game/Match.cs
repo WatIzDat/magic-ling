@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEditor.Rendering;
+using UnityEngine;
 
 public class Match
 {
@@ -14,12 +15,17 @@ public class Match
     private readonly List<Opponent> opponents = new();
     public ReadOnlyCollection<Opponent> Opponents => opponents.AsReadOnly();
 
-    public event Action<int, Word> OnWordUpdated;
+    private readonly List<GameCard> hand = new();
+    public ReadOnlyCollection<GameCard> Hand => hand.AsReadOnly();
 
-    public Match(Player player, List<Opponent> opponents)
+    public event Action<int, Word> OnWordUpdated;
+    public event Action<GameCard> OnCardDrawn;
+
+    public Match(Player player, List<Opponent> opponents, List<GameCard> hand)
     {
         this.player = player;
         this.opponents = opponents;
+        this.hand = hand;
 
         foreach (Opponent battler in opponents)
         {
@@ -41,6 +47,11 @@ public class Match
         OnWordUpdated?.Invoke(index, word);
     }
 
+    public void RemoveCardFromHand(GameCard card)
+    {
+        hand.Remove(card);
+    }
+
     public void EndTurn(List<Spell> playerSpells)
     {
         player.EndTurn();
@@ -60,6 +71,24 @@ public class Match
             CastSpellsOnPlayer(action.Spells, opponent);
 
             opponent.Behavior.NextAction();
+        }
+
+        for (int i = 0; i < words.Count; i++)
+        {
+            UpdateWord(i, new Word(words[i].Proto));
+        }
+
+        int cardsToDraw = player.MaxHandSize - hand.Count;
+
+        for (int i = 0; i < cardsToDraw; i++)
+        {
+            var possibleCards = player.Cards.Where(card => !hand.Contains(card));
+
+            GameCard card = possibleCards.ElementAt(UnityEngine.Random.Range(0, possibleCards.Count()));
+
+            hand.Add(card);
+
+            OnCardDrawn?.Invoke(card);
         }
     }
 

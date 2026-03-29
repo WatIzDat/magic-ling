@@ -54,9 +54,9 @@ namespace Tools.UI.Card
         public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
 
         //public ICard Card { get; set => { } }
-        private ICard card;
+        private GameCard card;
 
-        public ICard Card
+        public GameCard Card
         {
             get { return card; }
             set 
