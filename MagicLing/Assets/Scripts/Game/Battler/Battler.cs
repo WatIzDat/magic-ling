@@ -17,7 +17,7 @@ public class Battler
     public List<Word> Words { get; protected set; }
     public List<Effect> Effects { get; protected set; }
 
-    public delegate void OnDamageTakenEventHandler(Battler hitBattler, Battler attackBattler, Damage damage);
+    public delegate void OnDamageTakenEventHandler(Battler hitBattler);
     public delegate void OnDeathEventHandler(Battler battler);
 
     public event OnDamageTakenEventHandler OnDamageTaken;
@@ -40,14 +40,14 @@ public class Battler
         }
     }
 
-    public void TakeDamage(Battler battler, Damage damage)
+    public void TakeDamage(float attack, Damage damage)
     {
         if (damage == null)
             return;
 
-        Health -= damage.Amount * battler.Attack * (1f - Resistances[damage.DamageType]);
+        Health -= damage.Amount * attack * (1f - Resistances[damage.DamageType]);
 
-        OnDamageTaken?.Invoke(this, battler, damage);
+        OnDamageTaken?.Invoke(this);
 
         if (Health <= 0f)
         {
@@ -79,7 +79,7 @@ public class Battler
     {
         for (int i = Effects.Count - 1; i >= 0; i--)
         {
-            Effects[i].EndTurn(this);
+            Effects[i].EndTurn(this, 1f);
 
             if (Effects[i].Stacks <= 0)
             {

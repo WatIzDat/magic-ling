@@ -42,6 +42,8 @@ public class Match
 
     public void EndTurn(List<Spell> playerSpells)
     {
+        player.EndTurn();
+
         // clone opponents list to prevent modification during iteration
         foreach (Battler battler in opponents.ToList())
         {

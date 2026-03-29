@@ -9,7 +9,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("ʦaʦ") }, 100f, 1f);
+    private Player player = new(new List<Word>() { new("ʦaʦ") });
 
     private List<Spell> spells;
 
@@ -22,7 +22,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField]
     private Canvas canvas;
 
-    private readonly Dictionary<Battler, OpponentInfo> opponents = new();
+    private readonly Dictionary<Battler, BattlerUIInfo> opponents = new();
 
     [SerializeField]
     private GameObject opponentsParent;
@@ -38,6 +38,14 @@ public class MatchManager : MonoBehaviour
         public EffectType type;
         public GameObject icon;
     }
+
+    //[SerializeField]
+    //private Slider playerHealthSlider;
+
+    [SerializeField]
+    private GameObject playerObject;
+
+    private BattlerUIInfo playerInfo;
 
     //private void Awake()
     //{
@@ -60,7 +68,7 @@ public class MatchManager : MonoBehaviour
                 {
                     new("enemy") 
                 },
-                new CyclingBehavior(new EnemyAction[] { new(Spell.CreateFireSpell()) }),
+                new CyclingBehavior(new EnemyAction[] { new(Spell.CreateFireSpell()), new(Spell.CreateRuptureSpell()) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()
@@ -69,8 +77,8 @@ public class MatchManager : MonoBehaviour
                 },
                 new List<Effect>() 
                 {
-                    Effect.CreateRuptureEffect(3, player),
-                    Effect.CreateBurnEffect(2, player)
+                    Effect.CreateRuptureEffect(3),
+                    Effect.CreateBurnEffect(2)
                 }),
             //new(
             //    new List<Word>() 
@@ -152,9 +160,11 @@ public class MatchManager : MonoBehaviour
 
             //healthSliders.Add(opponentObj.GetComponentInChildren<Slider>());
 
-            opponents[battlers[i]] = new OpponentInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
+            opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
             opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
         }
+
+        playerInfo = new BattlerUIInfo(playerObject, playerObject.GetComponentInChildren<Slider>());
 
         //opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
     }
@@ -168,6 +178,8 @@ public class MatchManager : MonoBehaviour
             battler.OnDamageTaken += OnOpponentDamageTaken;
             battler.OnDeath += OnOpponentDeath;
         }
+
+        player.OnDamageTaken += OnPlayerDamageTaken;
     }
 
     private void OnDisable()
@@ -179,6 +191,8 @@ public class MatchManager : MonoBehaviour
             battler.OnDamageTaken -= OnOpponentDamageTaken;
             battler.OnDeath -= OnOpponentDeath;
         }
+
+        player.OnDamageTaken -= OnPlayerDamageTaken;
     }
 
     private void Update()
@@ -197,13 +211,15 @@ public class MatchManager : MonoBehaviour
         {
             opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
         }
+
+        playerInfo.EffectIcons = InstantiateEffectIcons(player.Effects, playerInfo);
     }
 
-    private Dictionary<Effect, GameObject> InstantiateEffectIcons(List<Effect> effects, OpponentInfo opponentInfo)
+    private Dictionary<Effect, GameObject> InstantiateEffectIcons(List<Effect> effects, BattlerUIInfo uiInfo)
     {
         Dictionary<Effect, GameObject> effectIcons = new();
 
-        foreach ((Effect _, GameObject obj) in opponentInfo.EffectIcons)
+        foreach ((Effect _, GameObject obj) in uiInfo.EffectIcons)
         {
             Destroy(obj);
         }
@@ -220,7 +236,10 @@ public class MatchManager : MonoBehaviour
             //    if (!effects.Contains(effect))
             //}
 
-            GameObject newIcon = Instantiate(effectIconsDictionary[effect.EffectType], opponentInfo.Object.transform);
+            RectTransform parentTransform = uiInfo.Object.GetComponent<RectTransform>();
+
+            GameObject newIcon = Instantiate(effectIconsDictionary[effect.EffectType], uiInfo.Object.transform);
+            //newIcon.transform.position = new(parentTransform.rect.xMax, parentTransform.rect.yMin);
 
             RectTransform rectTransform = newIcon.GetComponent<RectTransform>();
 
@@ -236,7 +255,7 @@ public class MatchManager : MonoBehaviour
         return effectIcons;
     }
 
-    private void OnOpponentDamageTaken(Battler hitBattler, Battler attackBattler, Damage damage)
+    private void OnOpponentDamageTaken(Battler hitBattler)
     {
         opponents[hitBattler].HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
     }
@@ -244,6 +263,11 @@ public class MatchManager : MonoBehaviour
     private void OnOpponentDeath(Battler battler)
     {
         Destroy(opponents[battler].Object);
+    }
+
+    private void OnPlayerDamageTaken(Battler hitBattler)
+    {
+        playerInfo.HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
     }
 
     private void OnMatchWordUpdated(int index, Word word)

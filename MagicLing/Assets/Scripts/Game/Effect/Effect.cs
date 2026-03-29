@@ -6,7 +6,7 @@ public class Effect
     public int Stacks { get; private set; }
     public int MaxStacks { get; private set; }
     public EffectType EffectType { get; private set; }
-    private Action<Battler> DealDamage { get; set; }
+    private Action<Battler, float> DealDamage { get; set; }
 
     //private Effect(int stacks, EffectType effectType, Action<Battler> dealDamage)
     //{
@@ -28,9 +28,9 @@ public class Effect
         DealDamage = original.DealDamage;
     }
 
-    public void EndTurn(Battler battler)
+    public void EndTurn(Battler battler, float attack)
     {
-        DealDamage(battler);
+        DealDamage(battler, attack);
 
         if (Stacks <= 0)
         {
@@ -45,7 +45,7 @@ public class Effect
         Stacks = Mathf.Clamp(Stacks + stacks, 0, Mathf.Max(MaxStacks, maxStacks));
     }
 
-    public static Effect CreateBurnEffect(int stacks, Battler otherBattler)
+    public static Effect CreateBurnEffect(int stacks)
     {
         Effect effect = new()
         {
@@ -54,12 +54,12 @@ public class Effect
             EffectType = EffectType.Burn
         };
 
-        effect.DealDamage = battler => battler.TakeDamage(otherBattler, new Damage(DamageType.Fire, effect.Stacks));
+        effect.DealDamage = (battler, attack) => battler.TakeDamage(attack, new Damage(DamageType.Fire, effect.Stacks));
 
         return effect;
     }
     
-    public static Effect CreateRuptureEffect(int stacks, Battler otherBattler)
+    public static Effect CreateRuptureEffect(int stacks)
     {
         Effect effect = new()
         {
@@ -68,12 +68,12 @@ public class Effect
             EffectType = EffectType.Rupture
         };
 
-        effect.DealDamage = battler => battler.TakeDamage(otherBattler, new Damage(DamageType.Grass, effect.Stacks));
+        effect.DealDamage = (battler, attack) => battler.TakeDamage(attack, new Damage(DamageType.Grass, effect.Stacks));
 
         return effect;
     }
 
-    public static Effect CreateSinkingEffect(int stacks, Battler otherBattler)
+    public static Effect CreateSinkingEffect(int stacks)
     {
         Effect effect = new()
         {
@@ -82,7 +82,7 @@ public class Effect
             EffectType = EffectType.Sinking
         };
 
-        effect.DealDamage = battler => battler.TakeDamage(otherBattler, new Damage(DamageType.Water, effect.MaxStacks - effect.Stacks + 1));
+        effect.DealDamage = (battler, attack) => battler.TakeDamage(attack, new Damage(DamageType.Water, effect.MaxStacks - effect.Stacks + 1));
 
         return effect;
     }

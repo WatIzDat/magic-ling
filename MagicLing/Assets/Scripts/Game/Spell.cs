@@ -29,7 +29,7 @@ public record Spell
         if (Effect != null)
             hitBattler.AddEffect(new Effect(Effect));
 
-        hitBattler.TakeDamage(attackBattler, Damage);
+        hitBattler.TakeDamage(attackBattler.Attack, Damage);
     }
 
     public static Spell CreateSpellOfSyllable(int wordPos, Syllable syllable, Player player)
@@ -48,7 +48,7 @@ public record Spell
         }
         else if (IsRuptureSyllable(syllable))
         {
-            return CreateRuptureSpell(player, wordPos, wordPos + syllable.Full.Length);
+            return CreateRuptureSpell(wordPos, wordPos + syllable.Full.Length);
         }
         else
         {
@@ -76,9 +76,9 @@ public record Spell
         return new(startIndex, endIndex, Color.black, new Damage(DamageType.Physical));
     }
 
-    public static Spell CreateRuptureSpell(Player player, int startIndex = 0, int endIndex = 0)
+    public static Spell CreateRuptureSpell(int startIndex = 0, int endIndex = 0)
     {
-        return new(startIndex, endIndex, new Color(0.024f, 0.251f, 0.169f), Effect.CreateRuptureEffect(3, player));
+        return new(startIndex, endIndex, new Color(0.024f, 0.251f, 0.169f), Effect.CreateRuptureEffect(3));
     }
 
     public static bool IsFireSyllable(Syllable syllable)
