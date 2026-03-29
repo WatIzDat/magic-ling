@@ -53,13 +53,14 @@ public class MatchManager : MonoBehaviour
     {
         effectIconsDictionary = new(effectIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
 
-        List<Battler> battlers = new() 
+        List<Opponent> battlers = new() 
         {
             new(
                 new List<Word>() 
                 {
                     new("enemy") 
                 },
+                new CyclingBehavior(new EnemyAction[] { new(Spell.CreateFireSpell()) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()
@@ -71,43 +72,43 @@ public class MatchManager : MonoBehaviour
                     Effect.CreateRuptureEffect(3, player),
                     Effect.CreateBurnEffect(2, player)
                 }),
-            new(
-                new List<Word>() 
-                { 
-                    new("test") 
-                },
-                20f,
-                1f,
-                new Dictionary<DamageType, float>() 
-                { 
-                    { DamageType.Grass, 0.5f } 
-                }),
-            new(
-                new List<Word>() 
-                { 
-                    new("abc") 
-                },
-                20f,
-                1f,
-                new Dictionary<DamageType, float>() 
-                { 
-                    { DamageType.Grass, 0.5f } 
-                }),
-            new(
-                new List<Word>() 
-                { 
-                    new("def") 
-                },
-                20f,
-                1f,
-                new Dictionary<DamageType, float>() 
-                { 
-                    { DamageType.Grass, 0.5f } 
-                },
-                new List<Effect>()
-                {
-                    Effect.CreateSinkingEffect(3, player)
-                }),
+            //new(
+            //    new List<Word>() 
+            //    { 
+            //        new("test") 
+            //    },
+            //    20f,
+            //    1f,
+            //    new Dictionary<DamageType, float>() 
+            //    { 
+            //        { DamageType.Grass, 0.5f } 
+            //    }),
+            //new(
+            //    new List<Word>() 
+            //    { 
+            //        new("abc") 
+            //    },
+            //    20f,
+            //    1f,
+            //    new Dictionary<DamageType, float>() 
+            //    { 
+            //        { DamageType.Grass, 0.5f } 
+            //    }),
+            //new(
+            //    new List<Word>() 
+            //    { 
+            //        new("def") 
+            //    },
+            //    20f,
+            //    1f,
+            //    new Dictionary<DamageType, float>() 
+            //    { 
+            //        { DamageType.Grass, 0.5f } 
+            //    },
+            //    new List<Effect>()
+            //    {
+            //        Effect.CreateSinkingEffect(3, player)
+            //    }),
         };
 
         match = new(player, battlers);
@@ -192,7 +193,7 @@ public class MatchManager : MonoBehaviour
     {
         match.EndTurn(spells);
 
-        foreach (Battler battler in match.Opponents)
+        foreach (Opponent battler in match.Opponents)
         {
             opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
         }

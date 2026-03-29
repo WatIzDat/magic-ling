@@ -24,6 +24,14 @@ public record Spell
         Damage = damage;
     }
 
+    public void CastSpell(Battler hitBattler, Battler attackBattler)
+    {
+        if (Effect != null)
+            hitBattler.AddEffect(new Effect(Effect));
+
+        hitBattler.TakeDamage(attackBattler, Damage);
+    }
+
     public static Spell CreateSpellOfSyllable(int wordPos, Syllable syllable, Player player)
     {
         if (IsFireSyllable(syllable))
@@ -40,7 +48,7 @@ public record Spell
         }
         else if (IsRuptureSyllable(syllable))
         {
-            return CreateRuptureSpell(wordPos, wordPos + syllable.Full.Length, player);
+            return CreateRuptureSpell(player, wordPos, wordPos + syllable.Full.Length);
         }
         else
         {
@@ -48,27 +56,27 @@ public record Spell
         }
     }
 
-    public static Spell CreateFireSpell(int startIndex, int endIndex)
+    public static Spell CreateFireSpell(int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, Color.red, new Damage(DamageType.Fire));
     }
 
-    public static Spell CreateGrassSpell(int startIndex, int endIndex)
+    public static Spell CreateGrassSpell(int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, Color.green, new Damage(DamageType.Grass));
     }
 
-    public static Spell CreateWaterSpell(int startIndex, int endIndex)
+    public static Spell CreateWaterSpell(int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, Color.blue, new Damage(DamageType.Water));
     }
 
-    public static Spell CreatePhysicalSpell(int startIndex, int endIndex)
+    public static Spell CreatePhysicalSpell(int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, Color.black, new Damage(DamageType.Physical));
     }
 
-    public static Spell CreateRuptureSpell(int startIndex, int endIndex, Player player)
+    public static Spell CreateRuptureSpell(Player player, int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, new Color(0.024f, 0.251f, 0.169f), Effect.CreateRuptureEffect(3, player));
     }

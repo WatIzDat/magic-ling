@@ -54,7 +54,7 @@ public class Battler
             OnDeath?.Invoke(this);
         }
 
-        //Debug.Log(Health);
+        Debug.Log(Health);
     }
 
     public void AddEffect(Effect effect)
