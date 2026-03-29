@@ -9,7 +9,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("ʦaʦ") });
+    private Player player = new(new List<Word>() { new("ʦaʣrerɾi") });
 
     private List<Spell> spells;
 
@@ -104,7 +104,7 @@ public class MatchManager : MonoBehaviour
                 {
                     new("test")
                 },
-                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell() }), new(new() { Spell.CreateRuptureSpell(), Spell.CreateGrassSpell() }) }),
+                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell(), Spell.CreateBurnSpell() }), new(new() { Spell.CreateSinkingSpell(), Spell.CreateGrassSpell() }) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()

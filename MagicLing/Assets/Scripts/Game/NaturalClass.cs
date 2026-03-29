@@ -7,5 +7,7 @@ public enum NaturalClass
     Liquid,
     Semivowel,
     Nasal,
-    Affricate
+    Affricate,
+    Trill,
+    Tap
 }

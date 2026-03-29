@@ -46,9 +46,17 @@ public record Spell
         {
             return CreateWaterSpell(wordPos, wordPos + syllable.Full.Length);
         }
+        else if (IsBurnSyllable(syllable))
+        {
+            return CreateBurnSpell(wordPos, wordPos + syllable.Full.Length);
+        }
         else if (IsRuptureSyllable(syllable))
         {
             return CreateRuptureSpell(wordPos, wordPos + syllable.Full.Length);
+        }
+        else if (IsSinkingSyllable(syllable))
+        {
+            return CreateSinkingSpell(wordPos, wordPos + syllable.Full.Length);
         }
         else
         {
@@ -76,9 +84,19 @@ public record Spell
         return new(startIndex, endIndex, Color.black, new Damage(DamageType.Physical));
     }
 
+    public static Spell CreateBurnSpell(int startIndex = 0, int endIndex = 0)
+    {
+        return new(startIndex, endIndex, new Color(1f, 0.647f, 0f), Effect.CreateBurnEffect(3));
+    }
+
     public static Spell CreateRuptureSpell(int startIndex = 0, int endIndex = 0)
     {
         return new(startIndex, endIndex, new Color(0.024f, 0.251f, 0.169f), Effect.CreateRuptureEffect(3));
+    }
+
+    public static Spell CreateSinkingSpell(int startIndex = 0, int endIndex = 0)
+    {
+        return new(startIndex, endIndex, new Color(0f, 1f, 1f), Effect.CreateSinkingEffect(3));
     }
 
     public static bool IsFireSyllable(Syllable syllable)
@@ -96,8 +114,18 @@ public record Spell
         return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Liquid, NaturalClass.Semivowel, NaturalClass.Nasal);
     }
 
+    public static bool IsBurnSyllable(Syllable syllable)
+    {
+        return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Trill, NaturalClass.Nasal);
+    }
+
     public static bool IsRuptureSyllable(Syllable syllable)
     {
         return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Affricate, NaturalClass.Nasal);
+    }
+
+    public static bool IsSinkingSyllable(Syllable syllable)
+    {
+        return syllable.AreAllConsonantsOfNaturalClasses(NaturalClass.Tap, NaturalClass.Nasal);
     }
 }

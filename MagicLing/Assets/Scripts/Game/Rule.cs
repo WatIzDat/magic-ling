@@ -7,12 +7,14 @@ public static class Rule
     {
         { NaturalClass.Consonant, new("[^aeiou]") },
         { NaturalClass.Vowel, new("[aeiou]") },
-        { NaturalClass.Plosive, new("[bcdgkpqt]") },
-        { NaturalClass.Fricative, new("[fhsvxz]") },
-        { NaturalClass.Liquid, new("[lr]") },
+        { NaturalClass.Plosive, new("[bdgkpt]") },
+        { NaturalClass.Fricative, new("[fhsvz]") },
+        { NaturalClass.Liquid, new("[lɹ]") },
         { NaturalClass.Semivowel, new("[wy]") },
         { NaturalClass.Nasal, new("[mn]") },
-        { NaturalClass.Affricate, new("[ʦ]") }
+        { NaturalClass.Affricate, new("[ʦʣ]") },
+        { NaturalClass.Trill, new("[r]") },
+        { NaturalClass.Tap, new("[ɾ]") }
     };
 
     public static string ApplyRule(string pattern, string replacement, string word)
