@@ -1,4 +1,5 @@
 public interface IEnemyBehavior
 {
-    EnemyAction GetNextAction();
+    EnemyAction GetCurrentAction();
+    void NextAction();
 }

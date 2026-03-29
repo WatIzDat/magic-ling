@@ -8,12 +8,13 @@ public class CyclingBehavior : IEnemyBehavior
         this.pattern = pattern;
     }
 
-    public EnemyAction GetNextAction()
+    public EnemyAction GetCurrentAction()
     {
-        EnemyAction action = pattern[index];
+        return pattern[index];
+    }
 
+    public void NextAction()
+    {
         index = (index + 1) % pattern.Length;
-
-        return action;
     }
 }

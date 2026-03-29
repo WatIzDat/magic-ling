@@ -7,11 +7,13 @@ public class BattlerUIInfo
     public GameObject Object { get; set; }
     public Slider HealthSlider { get; set; }
     public Dictionary<Effect, GameObject> EffectIcons { get; set; }
+    public List<GameObject> ActionIcons { get; set; }
 
-    public BattlerUIInfo(GameObject gameObject, Slider healthSlider, Dictionary<Effect, GameObject> effectIcons = null)
+    public BattlerUIInfo(GameObject gameObject, Slider healthSlider, Dictionary<Effect, GameObject> effectIcons = null, List<GameObject> actionIcons = null)
     {
         Object = gameObject;
         HealthSlider = healthSlider;
         EffectIcons = effectIcons ?? new();
+        ActionIcons = actionIcons ?? new();
     }
 }

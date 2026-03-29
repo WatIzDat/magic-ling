@@ -39,6 +39,23 @@ public class MatchManager : MonoBehaviour
         public GameObject icon;
     }
 
+    [SerializeField]
+    private List<DamageTypeToIconMapping> damageActionIcons;
+
+    private Dictionary<DamageType, GameObject> damageActionIconsDictionary;
+
+    [System.Serializable]
+    private class DamageTypeToIconMapping
+    {
+        public DamageType type;
+        public GameObject icon;
+    }
+
+    [SerializeField]
+    private List<EffectTypeToIconMapping> effectActionIcons;
+
+    private Dictionary<EffectType, GameObject> effectActionIconsDictionary;
+
     //[SerializeField]
     //private Slider playerHealthSlider;
 
@@ -60,6 +77,8 @@ public class MatchManager : MonoBehaviour
     private void Awake()
     {
         effectIconsDictionary = new(effectIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
+        damageActionIconsDictionary = new(damageActionIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
+        effectActionIconsDictionary = new(effectActionIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
 
         List<Opponent> battlers = new() 
         {
@@ -68,7 +87,7 @@ public class MatchManager : MonoBehaviour
                 {
                     new("enemy") 
                 },
-                new CyclingBehavior(new EnemyAction[] { new(Spell.CreateFireSpell()), new(Spell.CreateRuptureSpell()) }),
+                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell() }), new(new() { Spell.CreateRuptureSpell() }) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()
@@ -80,17 +99,18 @@ public class MatchManager : MonoBehaviour
                     Effect.CreateRuptureEffect(3),
                     Effect.CreateBurnEffect(2)
                 }),
-            //new(
-            //    new List<Word>() 
-            //    { 
-            //        new("test") 
-            //    },
-            //    20f,
-            //    1f,
-            //    new Dictionary<DamageType, float>() 
-            //    { 
-            //        { DamageType.Grass, 0.5f } 
-            //    }),
+            new(
+                new List<Word>()
+                {
+                    new("test")
+                },
+                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell() }), new(new() { Spell.CreateRuptureSpell(), Spell.CreateGrassSpell() }) }),
+                20f,
+                1f,
+                new Dictionary<DamageType, float>()
+                {
+                    { DamageType.Grass, 0.5f }
+                }),
             //new(
             //    new List<Word>() 
             //    { 
@@ -162,6 +182,7 @@ public class MatchManager : MonoBehaviour
 
             opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
             opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
+            opponents[battlers[i]].ActionIcons = InstantiateEnemyActionIcons(battlers[i].Behavior.GetCurrentAction(), opponents[battlers[i]]);
         }
 
         playerInfo = new BattlerUIInfo(playerObject, playerObject.GetComponentInChildren<Slider>());
@@ -210,9 +231,59 @@ public class MatchManager : MonoBehaviour
         foreach (Opponent battler in match.Opponents)
         {
             opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
+            opponents[battler].ActionIcons = InstantiateEnemyActionIcons(battler.Behavior.GetCurrentAction(), opponents[battler]);
         }
 
         playerInfo.EffectIcons = InstantiateEffectIcons(player.Effects, playerInfo);
+    }
+
+    private List<GameObject> InstantiateEnemyActionIcons(EnemyAction action, BattlerUIInfo uiInfo)
+    {
+        foreach (GameObject obj in uiInfo.ActionIcons)
+        {
+            Destroy(obj);
+        }
+
+        List<GameObject> actionIcons = new();
+
+        int i = 0;
+
+        foreach (Spell spell in action.Spells)
+        {
+            RectTransform parentTransform = uiInfo.Object.GetComponent<RectTransform>();
+
+            if (spell.Damage != null)
+            {
+                GameObject newIcon = Instantiate(damageActionIconsDictionary[spell.Damage.DamageType], uiInfo.Object.transform);
+
+                RectTransform rectTransform = newIcon.GetComponent<RectTransform>();
+
+                rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * rectTransform.rect.height), 0f);
+
+                newIcon.GetComponentInChildren<TMP_Text>().text = spell.Damage.Amount.ToString();
+
+                actionIcons.Add(newIcon);
+
+                i++;
+            }
+
+            if (spell.Effect != null)
+            {
+                GameObject newIcon = Instantiate(effectActionIconsDictionary[spell.Effect.EffectType], uiInfo.Object.transform);
+
+                RectTransform rectTransform = newIcon.GetComponent<RectTransform>();
+
+                rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * rectTransform.rect.height), 0f);
+
+                newIcon.GetComponentInChildren<TMP_Text>().text = spell.Effect.Stacks.ToString();
+
+                actionIcons.Add(newIcon);
+
+                i++;
+            }
+        }
+
+        return actionIcons;
     }
 
     private Dictionary<Effect, GameObject> InstantiateEffectIcons(List<Effect> effects, BattlerUIInfo uiInfo)

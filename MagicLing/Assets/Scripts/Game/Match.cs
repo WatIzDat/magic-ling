@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using UnityEditor.Rendering;
 
 public class Match
 {
@@ -54,9 +55,11 @@ public class Match
 
         foreach (Opponent opponent in opponents)
         {
-            EnemyAction action = opponent.Behavior.GetNextAction();
+            EnemyAction action = opponent.Behavior.GetCurrentAction();
 
-            CastSpellOnPlayer(action.Spell, opponent);
+            CastSpellsOnPlayer(action.Spells, opponent);
+
+            opponent.Behavior.NextAction();
         }
     }
 
@@ -72,8 +75,11 @@ public class Match
         }
     }
 
-    private void CastSpellOnPlayer(Spell spell, Opponent opponent)
+    private void CastSpellsOnPlayer(List<Spell> spells, Opponent opponent)
     {
-        spell.CastSpell(player, opponent);
+        foreach (Spell spell in spells)
+        {
+            spell.CastSpell(player, opponent);
+        }
     }
 }

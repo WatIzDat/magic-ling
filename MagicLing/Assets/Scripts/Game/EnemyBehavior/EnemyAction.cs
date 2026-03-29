@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+
 public record EnemyAction
 {
-    public Spell Spell { get; }
+    public List<Spell> Spells { get; }
 
-    public EnemyAction(Spell spell)
+    public EnemyAction(List<Spell> spells)
     {
-        Spell = spell;
+        Spells = spells;
     }
 }
