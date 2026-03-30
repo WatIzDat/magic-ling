@@ -3,6 +3,7 @@
     public string Pattern { get; }
     public string Replacement { get; }
     public override string Title => $"{Pattern} → {Replacement}";
+    public override string Description => $"{Pattern} becomes {Replacement}";
 
     public RuleCard(string pattern, string replacement)
     {

@@ -37,6 +37,7 @@ namespace Tools.UI.Card
         public UiCardParameters CardConfigsParameters => cardConfigsParameters;
         [SerializeField] public UiCardParameters cardConfigsParameters;
         [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text descriptionText;
         private UiCardHandFsm Fsm { get; set; }
         private Transform MyTransform { get; set; }
         private Collider MyCollider { get; set; }
@@ -62,7 +63,9 @@ namespace Tools.UI.Card
             set 
             { 
                 card = value;
+
                 titleText.text = card.Title;
+                descriptionText.text = card.Description;
             }
         }
 
