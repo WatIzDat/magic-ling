@@ -52,7 +52,7 @@ public class Match
         hand.Remove(card);
     }
 
-    public void EndTurn(List<Spell> playerSpells)
+    public void EndTurn(List<Spell> playerSpells, Opponent targetOpponent)
     {
         player.EndTurn();
 
@@ -62,7 +62,7 @@ public class Match
             battler.EndTurn();
         }
 
-        CastSpellsOnOpponents(playerSpells);
+        CastSpellsOnOpponent(playerSpells, targetOpponent);
 
         foreach (Opponent opponent in opponents)
         {
@@ -92,15 +92,11 @@ public class Match
         }
     }
 
-    private void CastSpellsOnOpponents(List<Spell> spells)
+    private void CastSpellsOnOpponent(List<Spell> spells, Opponent opponent)
     {
-        // clone opponents list to prevent modification during iteration
-        foreach (Battler opponent in opponents.ToList())
+        foreach (Spell spell in spells)
         {
-            foreach (Spell spell in spells)
-            {
-                spell.CastSpell(opponent, player);
-            }
+            spell.CastSpell(opponent, player);
         }
     }
 

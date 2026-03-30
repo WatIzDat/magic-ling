@@ -23,7 +23,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField]
     private Canvas canvas;
 
-    private readonly Dictionary<Battler, BattlerUIInfo> opponents = new();
+    private readonly Dictionary<Opponent, BattlerUIInfo> opponents = new();
 
     [SerializeField]
     private GameObject opponentsParent;
@@ -67,6 +67,8 @@ public class MatchManager : MonoBehaviour
 
     [SerializeField]
     private UiCardUtils cardUtils;
+
+    private Opponent selectedOpponent;
 
     //private void Awake()
     //{
@@ -150,7 +152,9 @@ public class MatchManager : MonoBehaviour
             OnMatchWordUpdated(i, match.Words[i]);
         }
 
-        List<Slider> healthSliders = new();
+        //List<Slider> healthSliders = new();
+
+        selectedOpponent = battlers[0];
 
         for (int i = 0; i < battlers.Count; i++)
         {
@@ -187,6 +191,10 @@ public class MatchManager : MonoBehaviour
             opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
             opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
             opponents[battlers[i]].ActionIcons = InstantiateEnemyActionIcons(battlers[i].Behavior.GetCurrentAction(), opponents[battlers[i]]);
+
+            Opponent opponent = battlers[i];
+
+            opponents[battlers[i]].Object.GetComponent<Button>().onClick.AddListener(() => selectedOpponent = opponent);
         }
 
         playerInfo = new BattlerUIInfo(playerObject, playerObject.GetComponentInChildren<Slider>());
@@ -240,7 +248,7 @@ public class MatchManager : MonoBehaviour
 
     private void EndTurn()
     {
-        match.EndTurn(spells);
+        match.EndTurn(spells, selectedOpponent);
 
         foreach (Opponent battler in match.Opponents)
         {
@@ -342,12 +350,17 @@ public class MatchManager : MonoBehaviour
 
     private void OnOpponentDamageTaken(Battler hitBattler)
     {
-        opponents[hitBattler].HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
+        opponents[(Opponent)hitBattler].HealthSlider.value = hitBattler.Health / hitBattler.MaxHealth;
     }
 
     private void OnOpponentDeath(Battler battler)
     {
-        Destroy(opponents[battler].Object);
+        if (battler == selectedOpponent)
+        {
+            selectedOpponent = opponents.ElementAt(0).Key;
+        }
+
+        Destroy(opponents[(Opponent)battler].Object);
     }
 
     private void OnPlayerDamageTaken(Battler hitBattler)
