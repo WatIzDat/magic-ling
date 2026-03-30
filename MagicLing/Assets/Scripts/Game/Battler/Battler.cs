@@ -16,6 +16,7 @@ public class Battler
     };
     public List<Word> Words { get; protected set; }
     public List<Effect> Effects { get; protected set; }
+    public List<Damage> Blocks { get; protected set; }
 
     public delegate void OnDamageTakenEventHandler(Battler hitBattler);
     public delegate void OnDeathEventHandler(Battler battler);
@@ -23,13 +24,14 @@ public class Battler
     public event OnDamageTakenEventHandler OnDamageTaken;
     public event OnDeathEventHandler OnDeath;
 
-    public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null)
+    public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null, List<Damage> blocks = null)
     {
         Health = health;
         MaxHealth = health;
         Attack = attack;
         Words = words;
         Effects = effects ?? new();
+        Blocks = blocks ?? new();
 
         if (resistances != null)
         {
@@ -46,6 +48,15 @@ public class Battler
             return;
 
         Health -= damage.Amount * attack * (1f - Resistances[damage.DamageType]);
+
+        foreach (Damage block in Blocks)
+        {
+            Debug.Log("Block: " + block.Amount + " " + block.DamageType);
+            if (block.DamageType == damage.DamageType)
+            {
+                Health += block.Amount;
+            }
+        }
 
         OnDamageTaken?.Invoke(this);
 
@@ -75,7 +86,25 @@ public class Battler
         Effects.Add(effect);
     }
 
-    public void EndTurn()
+    public void AddBlock(Damage block)
+    {
+        if (block == null)
+            return;
+
+        for (int i = 0; i < Blocks.Count; i++)
+        {
+            if (Blocks[i].DamageType == block.DamageType)
+            {
+                Blocks[i] = new Damage(block.DamageType, Blocks[i].Amount + block.Amount);
+
+                return;
+            }
+        }
+
+        Blocks.Add(block);
+    }
+
+    public void TickEffects()
     {
         for (int i = Effects.Count - 1; i >= 0; i--)
         {

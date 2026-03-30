@@ -9,5 +9,6 @@ public enum NaturalClass
     Nasal,
     Affricate,
     Trill,
-    Tap
+    Tap,
+    Close
 }

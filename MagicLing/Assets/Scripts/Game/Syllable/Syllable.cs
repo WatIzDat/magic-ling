@@ -87,7 +87,7 @@ public readonly struct Syllable
     //    return regex.IsMatch(Onset) && regex.IsMatch(Coda);
     //}
 
-    public bool AreAllConsonantsOfNaturalClasses(params NaturalClass[] naturalClasses)
+    private Regex NaturalClassesToRegex(NaturalClass[] naturalClasses)
     {
         string regexStr = "";
 
@@ -105,7 +105,28 @@ public readonly struct Syllable
 
         Regex regex = new($"^(?:{regexStr})*$");
 
+        return regex;
+    }
+
+    public bool AreAllConsonantsOfNaturalClasses(params NaturalClass[] naturalClasses)
+    {
+        Regex regex = NaturalClassesToRegex(naturalClasses);
+
         return regex.IsMatch(Onset) && regex.IsMatch(Coda);
+    }
+
+    public bool AreAllVowelsOfNaturalClasses(params NaturalClass[] naturalClasses)
+    {
+        Regex regex = NaturalClassesToRegex(naturalClasses);
+
+        return regex.IsMatch(Nucleus);
+    }
+
+    public bool AreAllVowels(params string[] vowels)
+    {
+        Regex regex = new($"^[{string.Join("", vowels)}]*$");
+
+        return regex.IsMatch(Nucleus);
     }
 
     //public static List<Syllable> Syllabify(string word, SyllableStructure structure)

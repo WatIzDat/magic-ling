@@ -54,12 +54,21 @@ public class Match
 
     public void EndTurn(List<Spell> playerSpells, Opponent targetOpponent)
     {
-        player.EndTurn();
+        player.TickEffects();
 
         // clone opponents list to prevent modification during iteration
         foreach (Battler battler in opponents.ToList())
         {
-            battler.EndTurn();
+            battler.TickEffects();
+        }
+
+        ApplyBlocks(playerSpells, player);
+
+        foreach (Opponent opponent in opponents)
+        {
+            EnemyAction action = opponent.Behavior.GetCurrentAction();
+
+            ApplyBlocks(action.Spells, opponent);
         }
 
         CastSpellsOnOpponent(playerSpells, targetOpponent);
@@ -105,6 +114,14 @@ public class Match
         foreach (Spell spell in spells)
         {
             spell.CastSpell(player, opponent);
+        }
+    }
+
+    private void ApplyBlocks(List<Spell> spells, Battler battler)
+    {
+        foreach (Spell spell in spells)
+        {
+            battler.AddBlock(spell.Block);
         }
     }
 }

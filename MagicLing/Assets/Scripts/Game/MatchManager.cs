@@ -93,7 +93,7 @@ public class MatchManager : MonoBehaviour
                 {
                     new("enemy") 
                 },
-                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell() }), new(new() { Spell.CreateRuptureSpell() }) }),
+                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateSpellOfSyllable(0, new Syllable("p", "a", "t")) }), new(new() { Spell.CreateSpellOfSyllable(0, new Syllable("ʣ", "a", "ʣ")) }) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()
@@ -105,18 +105,18 @@ public class MatchManager : MonoBehaviour
                     Effect.CreateRuptureEffect(3),
                     Effect.CreateBurnEffect(2)
                 }),
-            new(
-                new List<Word>()
-                {
-                    new("test")
-                },
-                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell(), Spell.CreateBurnSpell() }), new(new() { Spell.CreateSinkingSpell(), Spell.CreateGrassSpell() }) }),
-                20f,
-                1f,
-                new Dictionary<DamageType, float>()
-                {
-                    { DamageType.Grass, 0.5f }
-                }),
+            //new(
+            //    new List<Word>()
+            //    {
+            //        new("test")
+            //    },
+            //    new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell(), Spell.CreateBurnSpell() }), new(new() { Spell.CreateSinkingSpell(), Spell.CreateGrassSpell() }) }),
+            //    20f,
+            //    1f,
+            //    new Dictionary<DamageType, float>()
+            //    {
+            //        { DamageType.Grass, 0.5f }
+            //    }),
             //new(
             //    new List<Word>() 
             //    { 
@@ -379,7 +379,7 @@ public class MatchManager : MonoBehaviour
         foreach (Spell spell in spells)
         {
             Debug.Log(spell.Color);
-            newText += $"<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.StartIndex..spell.EndIndex]}";
+            newText += $"<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.StartIndex..spell.NucleusStartIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.NucleusColor)}>{word.Current[spell.NucleusStartIndex..spell.NucleusEndIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.NucleusEndIndex..spell.EndIndex]}";
         }
 
         wordText[index].text = newText;
@@ -400,7 +400,7 @@ public class MatchManager : MonoBehaviour
 
         foreach (Syllable syllable in syllables)
         {
-            result.Add(Spell.CreateSpellOfSyllable(wordPos, syllable, player));
+            result.Add(Spell.CreateSpellOfSyllable(wordPos, syllable));
 
             wordPos += syllable.Full.Length;
         }

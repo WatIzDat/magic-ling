@@ -14,7 +14,8 @@ public static class Rule
         { NaturalClass.Nasal, new("[mn]") },
         { NaturalClass.Affricate, new("[ʦʣ]") },
         { NaturalClass.Trill, new("[r]") },
-        { NaturalClass.Tap, new("[ɾ]") }
+        { NaturalClass.Tap, new("[ɾ]") },
+        { NaturalClass.Close, new("[iu]") }
     };
 
     public static string ApplyRule(string pattern, string replacement, string word)
