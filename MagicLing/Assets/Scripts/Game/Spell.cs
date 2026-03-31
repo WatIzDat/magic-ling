@@ -13,27 +13,29 @@ public record Spell
     public Color NucleusColor { get; }
     public Damage Block { get; }
 
-    public Spell(int startIndex, int endIndex, Color color, Effect effect, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block = null)
-        : this(startIndex, endIndex, color, null, effect, nucleusStartIndex, nucleusEndIndex, nucleusColor, block)
-    {
-        //StartIndex = startIndex;
-        //EndIndex = endIndex;
-        //Color = color;
-        //Effect = effect;
-        //Block = block;
-    }
+    public float Heal { get; }
 
-    public Spell(int startIndex, int endIndex, Color color, Damage damage, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block = null)
-        : this(startIndex, endIndex, color, damage, null, nucleusStartIndex, nucleusEndIndex, nucleusColor, block)
-    {
-        //StartIndex = startIndex;
-        //EndIndex = endIndex;
-        //Color = color;
-        //Damage = damage;
-        //Block = block;
-    }
+    //public Spell(int startIndex, int endIndex, Color color, Effect effect, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block = null)
+    //    : this(startIndex, endIndex, color, null, effect, nucleusStartIndex, nucleusEndIndex, nucleusColor, block)
+    //{
+    //    //StartIndex = startIndex;
+    //    //EndIndex = endIndex;
+    //    //Color = color;
+    //    //Effect = effect;
+    //    //Block = block;
+    //}
 
-    public Spell(int startIndex, int endIndex, Color color, Damage damage, Effect effect, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block)
+    //public Spell(int startIndex, int endIndex, Color color, Damage damage, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block = null)
+    //    : this(startIndex, endIndex, color, damage, null, nucleusStartIndex, nucleusEndIndex, nucleusColor, block)
+    //{
+    //    //StartIndex = startIndex;
+    //    //EndIndex = endIndex;
+    //    //Color = color;
+    //    //Damage = damage;
+    //    //Block = block;
+    //}
+
+    public Spell(int startIndex, int endIndex, Color color, Damage damage, Effect effect, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block, float heal)
     {
         StartIndex = startIndex;
         EndIndex = endIndex;
@@ -44,6 +46,7 @@ public record Spell
         NucleusEndIndex = nucleusEndIndex;
         NucleusColor = nucleusColor;
         Block = block;
+        Heal = heal;
     }
 
     public void CastSpell(Battler hitBattler, Battler attackBattler)
@@ -101,6 +104,7 @@ public record Spell
 
         Damage block = null;
         Color nucleusColor = color;
+        float heal = 0f;
 
         if (syllable.AreAllVowels("i"))
         {
@@ -122,8 +126,13 @@ public record Spell
             block = new Damage(DamageType.Physical);
             nucleusColor = Color.black;
         }
+        else if (syllable.AreAllVowels("a"))
+        {
+            heal = 1f;
+            nucleusColor = Color.yellow;
+        }
 
-        return new Spell(startIndex, endIndex, color, damage, effect, nucleusStartIndex, nucleusEndIndex, nucleusColor, block);
+        return new Spell(startIndex, endIndex, color, damage, effect, nucleusStartIndex, nucleusEndIndex, nucleusColor, block, heal);
     }
 
     //public static Spell CreateFireSpell(int startIndex = 0, int endIndex = 0, int nucleusStartIndex = 0, int nucleusEndIndex = 0, Damage block = null)

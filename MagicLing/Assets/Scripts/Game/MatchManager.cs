@@ -223,11 +223,11 @@ public class MatchManager : MonoBehaviour
 
         foreach (Battler battler in match.Opponents)
         {
-            battler.OnDamageTaken += OnOpponentDamageTaken;
+            battler.OnHealthChanged += OnOpponentDamageTaken;
             battler.OnDeath += OnOpponentDeath;
         }
 
-        player.OnDamageTaken += OnPlayerDamageTaken;
+        player.OnHealthChanged += OnPlayerDamageTaken;
         player.OnBlockChanged += OnPlayerBlockChanged;
     }
 
@@ -238,11 +238,11 @@ public class MatchManager : MonoBehaviour
 
         foreach (Battler battler in match.Opponents)
         {
-            battler.OnDamageTaken -= OnOpponentDamageTaken;
+            battler.OnHealthChanged -= OnOpponentDamageTaken;
             battler.OnDeath -= OnOpponentDeath;
         }
 
-        player.OnDamageTaken -= OnPlayerDamageTaken;
+        player.OnHealthChanged -= OnPlayerDamageTaken;
         player.OnBlockChanged -= OnPlayerBlockChanged;
     }
 

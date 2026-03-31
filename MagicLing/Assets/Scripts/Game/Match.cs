@@ -62,13 +62,13 @@ public class Match
             battler.TickEffects();
         }
 
-        ApplyBlocks(playerSpells, player);
+        ApplyBlocksAndHeals(playerSpells, player);
 
         foreach (Opponent opponent in opponents)
         {
             EnemyAction action = opponent.Behavior.GetCurrentAction();
 
-            ApplyBlocks(action.Spells, opponent);
+            ApplyBlocksAndHeals(action.Spells, opponent);
         }
 
         CastSpellsOnOpponent(playerSpells, targetOpponent);
@@ -117,11 +117,12 @@ public class Match
         }
     }
 
-    private void ApplyBlocks(List<Spell> spells, Battler battler)
+    private void ApplyBlocksAndHeals(List<Spell> spells, Battler battler)
     {
         foreach (Spell spell in spells)
         {
             battler.AddBlock(spell.Block);
+            battler.Heal(spell.Heal);
         }
     }
 }

@@ -18,11 +18,11 @@ public class Battler
     public List<Effect> Effects { get; protected set; }
     public List<Damage> Blocks { get; protected set; }
 
-    public delegate void OnDamageTakenEventHandler(Battler hitBattler);
+    public delegate void OnHealthChangedEventHandler(Battler hitBattler);
     public delegate void OnDeathEventHandler(Battler battler);
     public delegate void OnBlockChangedHandler(DamageType damageType, float amount);
 
-    public event OnDamageTakenEventHandler OnDamageTaken;
+    public event OnHealthChangedEventHandler OnHealthChanged;
     public event OnDeathEventHandler OnDeath;
     public event OnBlockChangedHandler OnBlockChanged;
 
@@ -82,7 +82,7 @@ public class Battler
 
         Health -= calculatedDamage;
 
-        OnDamageTaken?.Invoke(this);
+        OnHealthChanged?.Invoke(this);
 
         if (Health <= 0f)
         {
@@ -130,6 +130,15 @@ public class Battler
         Blocks.Add(block);
 
         OnBlockChanged?.Invoke(block.DamageType, block.Amount);
+    }
+
+    public void Heal(float amount)
+    {
+        Health = Mathf.Clamp(Health + amount, 0f, MaxHealth);
+
+        OnHealthChanged?.Invoke(this);
+        
+        Debug.Log("Healed: " + Health);
     }
 
     public void TickEffects()
