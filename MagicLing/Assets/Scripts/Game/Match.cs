@@ -97,7 +97,6 @@ public class Match
 
             hand.Add(card);
 
-            // TODO: fix cards being misaligned on draw during hover
             OnCardDrawn?.Invoke(card);
         }
     }

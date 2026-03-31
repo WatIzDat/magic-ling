@@ -39,6 +39,8 @@ namespace Tools.UI.Card
         private float CardWidth => CardRenderer.bounds.size.x;
         private IUiCardHand CardHand { get; set; }
 
+        private IUiCard[] cards;
+
         #endregion
 
         //--------------------------------------------------------------------------------------------------------------
@@ -49,6 +51,13 @@ namespace Tools.UI.Card
         {
             if (cards == null)
                 throw new ArgumentException("Can't bend a card list null");
+
+            if (this.cards == null || cards.Length != this.cards.Length)
+            {
+                cards[^1].Movement.OnFinishMotion += OnBendFinished;
+            }
+
+            this.cards = cards;
 
             var fullAngle = -parameters.BentAngle;
             var anglePerCard = fullAngle / cards.Length;
@@ -63,6 +72,9 @@ namespace Tools.UI.Card
             for (var i = 0; i < cards.Length; i++)
             {
                 var card = cards[i];
+
+                card.Unselect();
+                card.Disable();
 
                 //set card Z angle
                 var angleTwist = (firstAngle + i * anglePerCard) * pivotLocationFactor;
@@ -88,6 +100,18 @@ namespace Tools.UI.Card
 
                 //increment offset
                 offsetX += CardWidth + parameters.Spacing;
+            }
+        }
+
+        private void OnBendFinished()
+        {
+            Debug.Log("OnBendFinished");
+            //cards[^1].Movement.OnFinishMotion -= OnBendFinished;
+
+            foreach (IUiCard card in cards)
+            {
+                card.Movement.OnFinishMotion -= OnBendFinished;
+                card.Enable();
             }
         }
 
