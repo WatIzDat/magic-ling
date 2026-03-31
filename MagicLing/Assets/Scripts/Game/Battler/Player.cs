@@ -12,8 +12,10 @@ public class Player : Battler
     //};
 
     //public int MaxHandSize { get; private set; } = 6;
+    public List<Word> Words { get; protected set; }
 
-    public Player(List<Word> words, float health = 20f, float attack = 1f) : base(words, health, attack)
+    public Player(List<Word> words, float health = 20f, float attack = 1f) : base(health, attack)
     {
+        Words = words;
     }
 }

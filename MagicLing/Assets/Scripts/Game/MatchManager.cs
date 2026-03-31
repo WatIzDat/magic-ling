@@ -97,10 +97,10 @@ public class MatchManager : MonoBehaviour
         List<Opponent> battlers = new() 
         {
             new(
-                new List<Word>() 
-                {
-                    new("enemy") 
-                },
+                //new List<Word>() 
+                //{
+                //    new("enemy") 
+                //},
                 new CyclingBehavior(new EnemyAction[] { new(new() { new Syllable("p", "a", "t") }), new(new() { new Syllable("ʣ", "a", "ʣ") }) }),
                 20f,
                 1f,
@@ -170,8 +170,8 @@ public class MatchManager : MonoBehaviour
 
             //Debug.Log(healthBarPrefab.rect.height);
 
-            TMP_Text text = opponentObj.GetComponentInChildren<TMP_Text>();
-            text.text = battlers[i].Words[0].Current;
+            //TMP_Text text = opponentObj.GetComponentInChildren<TMP_Text>();
+            //text.text = battlers[i].Words[0].Current;
 
             RectTransform rectTransform = opponentObj.GetComponent<RectTransform>();
 

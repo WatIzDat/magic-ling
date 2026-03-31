@@ -14,7 +14,7 @@ public class Battler
         { DamageType.Grass, 0f },
         { DamageType.Water, 0f }
     };
-    public List<Word> Words { get; protected set; }
+    //public List<Word> Words { get; protected set; }
     public List<Effect> Effects { get; protected set; }
     public List<Damage> Blocks { get; protected set; }
 
@@ -26,12 +26,12 @@ public class Battler
     public event OnDeathEventHandler OnDeath;
     public event OnBlockChangedHandler OnBlockChanged;
 
-    public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null, List<Damage> blocks = null)
+    public Battler(float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null, List<Damage> blocks = null)
     {
         Health = health;
         MaxHealth = health;
         Attack = attack;
-        Words = words;
+        //Words = words;
         Effects = effects ?? new();
         Blocks = blocks ?? new();
 
