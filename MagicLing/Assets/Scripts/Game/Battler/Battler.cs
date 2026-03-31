@@ -20,9 +20,11 @@ public class Battler
 
     public delegate void OnDamageTakenEventHandler(Battler hitBattler);
     public delegate void OnDeathEventHandler(Battler battler);
+    public delegate void OnBlockChangedHandler(DamageType damageType, float amount);
 
     public event OnDamageTakenEventHandler OnDamageTaken;
     public event OnDeathEventHandler OnDeath;
+    public event OnBlockChangedHandler OnBlockChanged;
 
     public Battler(List<Word> words, float health = 100f, float attack = 1f, Dictionary<DamageType, float> resistances = null, List<Effect> effects = null, List<Damage> blocks = null)
     {
@@ -47,16 +49,38 @@ public class Battler
         if (damage == null)
             return;
 
-        Health -= damage.Amount * attack * (1f - Resistances[damage.DamageType]);
+        float calculatedDamage = damage.Amount * attack * (1f - Resistances[damage.DamageType]);
 
-        foreach (Damage block in Blocks)
+        for (int i = Blocks.Count - 1; i >= 0; i--)
         {
-            Debug.Log("Block: " + block.Amount + " " + block.DamageType);
-            if (block.DamageType == damage.DamageType)
+            Debug.Log("Block: " + Blocks[i].Amount + " " + Blocks[i].DamageType);
+
+            if (Blocks[i].DamageType == damage.DamageType)
             {
-                Health += block.Amount;
+                float blockedDamage = calculatedDamage - Blocks[i].Amount;
+
+                if (blockedDamage <= 0f)
+                {
+                    blockedDamage = 0f;
+
+                    Blocks[i] = new Damage(Blocks[i].DamageType, Blocks[i].Amount - calculatedDamage);
+
+                    OnBlockChanged?.Invoke(Blocks[i].DamageType, Blocks[i].Amount);
+                }
+                else
+                {
+                    OnBlockChanged?.Invoke(Blocks[i].DamageType, 0f);
+
+                    Blocks.RemoveAt(i);
+                }
+
+                calculatedDamage = blockedDamage;
+
+                break;
             }
         }
+
+        Health -= calculatedDamage;
 
         OnDamageTaken?.Invoke(this);
 
@@ -97,11 +121,15 @@ public class Battler
             {
                 Blocks[i] = new Damage(block.DamageType, Blocks[i].Amount + block.Amount);
 
+                OnBlockChanged?.Invoke(block.DamageType, Blocks[i].Amount);
+
                 return;
             }
         }
 
         Blocks.Add(block);
+
+        OnBlockChanged?.Invoke(block.DamageType, block.Amount);
     }
 
     public void TickEffects()

@@ -57,6 +57,11 @@ public class MatchManager : MonoBehaviour
 
     private Dictionary<EffectType, GameObject> effectActionIconsDictionary;
 
+    [SerializeField]
+    private List<DamageTypeToIconMapping> blockIcons;
+
+    private Dictionary<DamageType, GameObject> blockIconsDictionary;
+
     //[SerializeField]
     //private Slider playerHealthSlider;
 
@@ -85,6 +90,7 @@ public class MatchManager : MonoBehaviour
         effectIconsDictionary = new(effectIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
         damageActionIconsDictionary = new(damageActionIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
         effectActionIconsDictionary = new(effectActionIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
+        blockIconsDictionary = new(blockIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
 
         List<Opponent> battlers = new() 
         {
@@ -222,6 +228,7 @@ public class MatchManager : MonoBehaviour
         }
 
         player.OnDamageTaken += OnPlayerDamageTaken;
+        player.OnBlockChanged += OnPlayerBlockChanged;
     }
 
     private void OnDisable()
@@ -236,6 +243,7 @@ public class MatchManager : MonoBehaviour
         }
 
         player.OnDamageTaken -= OnPlayerDamageTaken;
+        player.OnBlockChanged -= OnPlayerBlockChanged;
     }
 
     private void Update()
@@ -361,6 +369,11 @@ public class MatchManager : MonoBehaviour
         }
 
         Destroy(opponents[(Opponent)battler].Object);
+    }
+
+    private void OnPlayerBlockChanged(DamageType damageType, float amount)
+    {
+        blockIconsDictionary[damageType].GetComponentInChildren<TMP_Text>().text = amount.ToString();
     }
 
     private void OnPlayerDamageTaken(Battler hitBattler)
