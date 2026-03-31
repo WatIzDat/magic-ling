@@ -101,7 +101,7 @@ public class MatchManager : MonoBehaviour
                 {
                     new("enemy") 
                 },
-                new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateSpellOfSyllable(0, new Syllable("p", "a", "t")) }), new(new() { Spell.CreateSpellOfSyllable(0, new Syllable("ʣ", "a", "ʣ")) }) }),
+                new CyclingBehavior(new EnemyAction[] { new(new() { new Syllable("p", "a", "t") }), new(new() { new Syllable("ʣ", "a", "ʣ") }) }),
                 20f,
                 1f,
                 new Dictionary<DamageType, float>()
@@ -196,9 +196,13 @@ public class MatchManager : MonoBehaviour
 
             //healthSliders.Add(opponentObj.GetComponentInChildren<Slider>());
 
-            opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>());
+            opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>(), opponentObj.GetComponentInChildren<TMP_Text>());
             opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
-            opponents[battlers[i]].ActionIcons = InstantiateEnemyActionIcons(battlers[i].Behavior.GetCurrentAction(), opponents[battlers[i]]);
+            //opponents[battlers[i]].ActionIcons = InstantiateEnemyActionIcons(battlers[i].Behavior.GetCurrentAction(), opponents[battlers[i]]);
+            opponents[battlers[i]].Text.text =
+                GetFormattedSpellText(
+                    battlers[i].Behavior.GetCurrentAction().Spells,
+                    battlers[i].Behavior.GetCurrentAction().Word);
 
             Opponent opponent = battlers[i];
 
@@ -263,7 +267,11 @@ public class MatchManager : MonoBehaviour
         foreach (Opponent battler in match.Opponents)
         {
             opponents[battler].EffectIcons = InstantiateEffectIcons(battler.Effects, opponents[battler]);
-            opponents[battler].ActionIcons = InstantiateEnemyActionIcons(battler.Behavior.GetCurrentAction(), opponents[battler]);
+            //opponents[battler].ActionIcons = InstantiateEnemyActionIcons(battler.Behavior.GetCurrentAction(), opponents[battler]);
+            opponents[battler].Text.text =
+                GetFormattedSpellText(
+                    battler.Behavior.GetCurrentAction().Spells,
+                    battler.Behavior.GetCurrentAction().Word);
         }
 
         playerInfo.EffectIcons = InstantiateEffectIcons(player.Effects, playerInfo);
@@ -389,20 +397,24 @@ public class MatchManager : MonoBehaviour
 
         spells = GetSpells(word.Current);
 
-        string newText = "";
-
-        foreach (Spell spell in spells)
-        {
-            Debug.Log(spell.Color);
-            newText += $"<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.StartIndex..spell.NucleusStartIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.NucleusColor)}>{word.Current[spell.NucleusStartIndex..spell.NucleusEndIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word.Current[spell.NucleusEndIndex..spell.EndIndex]}";
-        }
-
-        wordText[index].text = newText;
+        wordText[index].text = GetFormattedSpellText(spells, word.Current);
     }
 
     private void OnMatchCardDrawn(GameCard card)
     {
         cardUtils.DrawCard(card);
+    }
+
+    private string GetFormattedSpellText(List<Spell> spells, string word)
+    {
+        string text = "";
+
+        foreach (Spell spell in spells)
+        {
+            text += $"<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word[spell.StartIndex..spell.NucleusStartIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.NucleusColor)}>{word[spell.NucleusStartIndex..spell.NucleusEndIndex]}<color=#{ColorUtility.ToHtmlStringRGB(spell.Color)}>{word[spell.NucleusEndIndex..spell.EndIndex]}";
+        }
+
+        return text;
     }
 
     private List<Spell> GetSpells(string word)
