@@ -10,7 +10,7 @@ public class MatchManager : MonoBehaviour
     public Match match;
     public SyllableStructure syllableStructure = SyllableStructure.Parse("CV(C)");
 
-    private Player player = new(new List<Word>() { new("ʦaʣrerɾipater") });
+    private Player player; // = new(new List<Word>() { new("ʦaʣrerɾipater") });
 
     private List<Spell> spells;
 
@@ -87,6 +87,8 @@ public class MatchManager : MonoBehaviour
 
     private void Awake()
     {
+        player = new(RunInfo.ProtoWords.Select(x => new Word(x)).ToList());
+
         effectIconsDictionary = new(effectIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
         damageActionIconsDictionary = new(damageActionIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
         effectActionIconsDictionary = new(effectActionIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
@@ -151,7 +153,7 @@ public class MatchManager : MonoBehaviour
             //    }),
         };
 
-        match = new(player, battlers, player.Cards.GetRange(0, 6));
+        match = new(player, battlers, RunInfo.Cards.OrderBy(_ => Random.value).Take(RunInfo.MaxHandSize).ToList());
 
         for (int i = 0; i < match.Words.Count; i++)
         {

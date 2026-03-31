@@ -1,8 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 public static class Rule
 {
+    public static readonly string[] LetterInventory = new string[]
+    {
+        "a", "e", "i", "o", "u",
+        "b", "d", "g", "k", "p", "t",
+        "f", "h", "s", "v", "z",
+        "l", "ɹ",
+        "w", "y",
+        "m", "n",
+        "ʦ", "ʣ",
+        "r",
+        "ɾ",
+        "i", "u"
+    };
+
     public static readonly Dictionary<NaturalClass, Regex> NaturalClassToRegex = new()
     {
         { NaturalClass.Consonant, new("[^aeiou]") },
@@ -17,6 +32,28 @@ public static class Rule
         { NaturalClass.Tap, new("[ɾ]") },
         { NaturalClass.Close, new("[iu]") }
     };
+
+    public static List<string> GetLettersOfNaturalClass(NaturalClass naturalClass)
+    {
+        List<string> letters = new();
+
+        foreach (string letter in LetterInventory)
+        {
+            if (NaturalClassToRegex[naturalClass].IsMatch(letter))
+            {
+                letters.Add(letter);
+            }
+        }
+
+        return letters;
+    }
+
+    public static string RandomLetterOfNaturalClass(NaturalClass naturalClass)
+    {
+        List<string> letters = GetLettersOfNaturalClass(naturalClass);
+
+        return letters[Random.Range(0, letters.Count)];
+    }
 
     public static string ApplyRule(string pattern, string replacement, string word)
     {

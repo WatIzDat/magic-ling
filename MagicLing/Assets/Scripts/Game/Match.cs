@@ -87,16 +87,17 @@ public class Match
             UpdateWord(i, new Word(words[i].Proto));
         }
 
-        int cardsToDraw = player.MaxHandSize - hand.Count;
+        int cardsToDraw = RunInfo.MaxHandSize - hand.Count;
 
         for (int i = 0; i < cardsToDraw; i++)
         {
-            var possibleCards = player.Cards.Where(card => !hand.Contains(card));
+            var possibleCards = RunInfo.Cards.Where(card => !hand.Contains(card));
 
             GameCard card = possibleCards.ElementAt(UnityEngine.Random.Range(0, possibleCards.Count()));
 
             hand.Add(card);
 
+            // TODO: fix cards being misaligned on draw during hover
             OnCardDrawn?.Invoke(card);
         }
     }
