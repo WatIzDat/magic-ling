@@ -20,7 +20,7 @@ public class Battler
 
     public delegate void OnHealthChangedEventHandler(Battler hitBattler);
     public delegate void OnDeathEventHandler(Battler battler);
-    public delegate void OnBlockChangedHandler(DamageType damageType, float amount);
+    public delegate void OnBlockChangedHandler(Battler battler, DamageType damageType, float amount);
 
     public event OnHealthChangedEventHandler OnHealthChanged;
     public event OnDeathEventHandler OnDeath;
@@ -65,11 +65,11 @@ public class Battler
 
                     Blocks[i] = new Damage(Blocks[i].DamageType, Blocks[i].Amount - calculatedDamage);
 
-                    OnBlockChanged?.Invoke(Blocks[i].DamageType, Blocks[i].Amount);
+                    OnBlockChanged?.Invoke(this, Blocks[i].DamageType, Blocks[i].Amount);
                 }
                 else
                 {
-                    OnBlockChanged?.Invoke(Blocks[i].DamageType, 0f);
+                    OnBlockChanged?.Invoke(this, Blocks[i].DamageType, 0f);
 
                     Blocks.RemoveAt(i);
                 }
@@ -121,7 +121,7 @@ public class Battler
             {
                 Blocks[i] = new Damage(block.DamageType, Blocks[i].Amount + block.Amount);
 
-                OnBlockChanged?.Invoke(block.DamageType, Blocks[i].Amount);
+                OnBlockChanged?.Invoke(this, block.DamageType, Blocks[i].Amount);
 
                 return;
             }
@@ -129,7 +129,7 @@ public class Battler
 
         Blocks.Add(block);
 
-        OnBlockChanged?.Invoke(block.DamageType, block.Amount);
+        OnBlockChanged?.Invoke(this, block.DamageType, block.Amount);
     }
 
     public void Heal(float amount)

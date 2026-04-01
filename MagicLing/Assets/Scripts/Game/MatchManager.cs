@@ -62,6 +62,11 @@ public class MatchManager : MonoBehaviour
 
     private Dictionary<DamageType, GameObject> blockIconsDictionary;
 
+    [SerializeField]
+    private List<DamageTypeToIconMapping> playerBlockIcons;
+
+    private Dictionary<DamageType, GameObject> playerBlockIconsDictionary;
+
     //[SerializeField]
     //private Slider playerHealthSlider;
 
@@ -93,6 +98,7 @@ public class MatchManager : MonoBehaviour
         damageActionIconsDictionary = new(damageActionIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
         effectActionIconsDictionary = new(effectActionIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
         blockIconsDictionary = new(blockIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
+        playerBlockIconsDictionary = new(playerBlockIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
 
         //List<Opponent> battlers = new() 
         //{
@@ -200,6 +206,7 @@ public class MatchManager : MonoBehaviour
 
             opponents[battlers[i]] = new BattlerUIInfo(opponentObj, opponentObj.GetComponentInChildren<Slider>(), opponentObj.GetComponentInChildren<TMP_Text>());
             opponents[battlers[i]].EffectIcons = InstantiateEffectIcons(battlers[i].Effects, opponents[battlers[i]]);
+            opponents[battlers[i]].BlockIcons = InstantiateBlockIcons(opponents[battlers[i]]);
             //opponents[battlers[i]].ActionIcons = InstantiateEnemyActionIcons(battlers[i].Behavior.GetCurrentAction(), opponents[battlers[i]]);
             opponents[battlers[i]].Text.text =
                 GetFormattedSpellText(
@@ -211,7 +218,7 @@ public class MatchManager : MonoBehaviour
             opponents[battlers[i]].Object.GetComponent<Button>().onClick.AddListener(() => selectedOpponent = opponent);
         }
 
-        playerInfo = new BattlerUIInfo(playerObject, playerObject.GetComponentInChildren<Slider>());
+        playerInfo = new BattlerUIInfo(playerObject, playerObject.GetComponentInChildren<Slider>(), blockIcons: playerBlockIconsDictionary);
 
         //opponentHealthSliders = battlers.Zip(healthSliders, (k, v) => (k, v)).ToDictionary(x => x.k, x => x.v);
     }
@@ -233,6 +240,7 @@ public class MatchManager : MonoBehaviour
         {
             battler.OnHealthChanged += OnOpponentDamageTaken;
             battler.OnDeath += OnOpponentDeath;
+            battler.OnBlockChanged += OnOpponentBlockChanged;
         }
 
         player.OnHealthChanged += OnPlayerDamageTaken;
@@ -248,6 +256,7 @@ public class MatchManager : MonoBehaviour
         {
             battler.OnHealthChanged -= OnOpponentDamageTaken;
             battler.OnDeath -= OnOpponentDeath;
+            battler.OnBlockChanged -= OnOpponentBlockChanged;
         }
 
         player.OnHealthChanged -= OnPlayerDamageTaken;
@@ -328,6 +337,31 @@ public class MatchManager : MonoBehaviour
         return actionIcons;
     }
 
+    private Dictionary<DamageType, GameObject> InstantiateBlockIcons(BattlerUIInfo uiInfo)
+    {
+        Dictionary<DamageType, GameObject> blockIcons = new();
+
+        int i = 0;
+
+        foreach ((DamageType damageType, GameObject icon) in blockIconsDictionary)
+        {
+            GameObject newIcon = Instantiate(icon, uiInfo.Object.transform);
+
+            RectTransform rectTransform = newIcon.GetComponent<RectTransform>();
+
+            rectTransform.anchoredPosition = new Vector3(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - (i * rectTransform.rect.height), 0f);
+
+            newIcon.GetComponentInChildren<TMP_Text>().text = "0";
+
+            blockIcons[damageType] = newIcon;
+
+            i++;
+        }
+
+        return blockIcons;
+    }
+
+
     private Dictionary<Effect, GameObject> InstantiateEffectIcons(List<Effect> effects, BattlerUIInfo uiInfo)
     {
         Dictionary<Effect, GameObject> effectIcons = new();
@@ -349,7 +383,7 @@ public class MatchManager : MonoBehaviour
             //    if (!effects.Contains(effect))
             //}
 
-            RectTransform parentTransform = uiInfo.Object.GetComponent<RectTransform>();
+            //RectTransform parentTransform = uiInfo.Object.GetComponent<RectTransform>();
 
             GameObject newIcon = Instantiate(effectIconsDictionary[effect.EffectType], uiInfo.Object.transform);
             //newIcon.transform.position = new(parentTransform.rect.xMax, parentTransform.rect.yMin);
@@ -383,9 +417,14 @@ public class MatchManager : MonoBehaviour
         Destroy(opponents[(Opponent)battler].Object);
     }
 
-    private void OnPlayerBlockChanged(DamageType damageType, float amount)
+    private void OnOpponentBlockChanged(Battler battler, DamageType damageType, float amount)
     {
-        blockIconsDictionary[damageType].GetComponentInChildren<TMP_Text>().text = amount.ToString();
+        opponents[(Opponent)battler].BlockIcons[damageType].GetComponentInChildren<TMP_Text>().text = amount.ToString();
+    }
+
+    private void OnPlayerBlockChanged(Battler battler, DamageType damageType, float amount)
+    {
+        playerInfo.BlockIcons[damageType].GetComponentInChildren<TMP_Text>().text = amount.ToString();
     }
 
     private void OnPlayerDamageTaken(Battler hitBattler)
