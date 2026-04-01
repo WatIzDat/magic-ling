@@ -94,64 +94,66 @@ public class MatchManager : MonoBehaviour
         effectActionIconsDictionary = new(effectActionIcons.Select(x => new KeyValuePair<EffectType, GameObject>(x.type, x.icon)));
         blockIconsDictionary = new(blockIcons.Select(x => new KeyValuePair<DamageType, GameObject>(x.type, x.icon)));
 
-        List<Opponent> battlers = new() 
-        {
-            new(
-                //new List<Word>() 
-                //{
-                //    new("enemy") 
-                //},
-                new CyclingBehavior(new EnemyAction[] { new(new() { new Syllable("p", "a", "t") }), new(new() { new Syllable("ʣ", "a", "ʣ") }) }),
-                20f,
-                1f,
-                new Dictionary<DamageType, float>()
-                {
-                    { DamageType.Fire, 0.5f } 
-                },
-                new List<Effect>() 
-                {
-                    Effect.CreateRuptureEffect(3),
-                    Effect.CreateBurnEffect(2)
-                }),
-            //new(
-            //    new List<Word>()
-            //    {
-            //        new("test")
-            //    },
-            //    new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell(), Spell.CreateBurnSpell() }), new(new() { Spell.CreateSinkingSpell(), Spell.CreateGrassSpell() }) }),
-            //    20f,
-            //    1f,
-            //    new Dictionary<DamageType, float>()
-            //    {
-            //        { DamageType.Grass, 0.5f }
-            //    }),
-            //new(
-            //    new List<Word>() 
-            //    { 
-            //        new("abc") 
-            //    },
-            //    20f,
-            //    1f,
-            //    new Dictionary<DamageType, float>() 
-            //    { 
-            //        { DamageType.Grass, 0.5f } 
-            //    }),
-            //new(
-            //    new List<Word>() 
-            //    { 
-            //        new("def") 
-            //    },
-            //    20f,
-            //    1f,
-            //    new Dictionary<DamageType, float>() 
-            //    { 
-            //        { DamageType.Grass, 0.5f } 
-            //    },
-            //    new List<Effect>()
-            //    {
-            //        Effect.CreateSinkingEffect(3, player)
-            //    }),
-        };
+        //List<Opponent> battlers = new() 
+        //{
+        //    new(
+        //        //new List<Word>() 
+        //        //{
+        //        //    new("enemy") 
+        //        //},
+        //        new CyclingBehavior(new EnemyAction[] { new(new() { new Syllable("p", "a", "t") }), new(new() { new Syllable("ʣ", "a", "ʣ") }) }),
+        //        20f,
+        //        1f,
+        //        new Dictionary<DamageType, float>()
+        //        {
+        //            { DamageType.Fire, 0.5f } 
+        //        },
+        //        new List<Effect>() 
+        //        {
+        //            Effect.CreateRuptureEffect(3),
+        //            Effect.CreateBurnEffect(2)
+        //        }),
+        //    //new(
+        //    //    new List<Word>()
+        //    //    {
+        //    //        new("test")
+        //    //    },
+        //    //    new CyclingBehavior(new EnemyAction[] { new(new() { Spell.CreateFireSpell(), Spell.CreateWaterSpell(), Spell.CreateBurnSpell() }), new(new() { Spell.CreateSinkingSpell(), Spell.CreateGrassSpell() }) }),
+        //    //    20f,
+        //    //    1f,
+        //    //    new Dictionary<DamageType, float>()
+        //    //    {
+        //    //        { DamageType.Grass, 0.5f }
+        //    //    }),
+        //    //new(
+        //    //    new List<Word>() 
+        //    //    { 
+        //    //        new("abc") 
+        //    //    },
+        //    //    20f,
+        //    //    1f,
+        //    //    new Dictionary<DamageType, float>() 
+        //    //    { 
+        //    //        { DamageType.Grass, 0.5f } 
+        //    //    }),
+        //    //new(
+        //    //    new List<Word>() 
+        //    //    { 
+        //    //        new("def") 
+        //    //    },
+        //    //    20f,
+        //    //    1f,
+        //    //    new Dictionary<DamageType, float>() 
+        //    //    { 
+        //    //        { DamageType.Grass, 0.5f } 
+        //    //    },
+        //    //    new List<Effect>()
+        //    //    {
+        //    //        Effect.CreateSinkingEffect(3, player)
+        //    //    }),
+        //};
+
+        List<Opponent> battlers = RunInfo.GetRandomOpponents();
 
         match = new(player, battlers, RunInfo.Cards.OrderBy(_ => Random.value).Take(RunInfo.MaxHandSize).ToList());
 

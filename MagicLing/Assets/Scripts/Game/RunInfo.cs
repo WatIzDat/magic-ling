@@ -7,6 +7,7 @@ public static class RunInfo
     public static string SyllableStructureNotation { get; private set; } = "CV(C)";
     public static List<GameCard> Cards { get; } = new();
     public static int MaxHandSize { get; private set; } = 6;
+    public static int Floor { get; private set; } = 1;
 
     private const int InitialCardsSize = 10;
 
@@ -43,5 +44,23 @@ public static class RunInfo
 
             Cards.Add(new RuleCard(Rule.RandomLetterOfNaturalClass(naturalClass), Rule.RandomLetterOfNaturalClass(naturalClass)));
         }
+    }
+
+    public static List<Opponent> GetRandomOpponents()
+    {
+        if (Floor == 1)
+        {
+            Syllable syllable = Word.RandomSyllables(SyllableStructure.Parse("PV(P)"), 1)[0];
+            
+            EnemyAction[] enemyActions =
+                new EnemyAction[] { new(new List<Syllable>() { syllable }) };
+
+            return new List<Opponent>() { new(new CyclingBehavior(enemyActions)) };
+        }
+        //else if (Floor <= 3)
+        //{
+        //}
+
+        return null;
     }
 }

@@ -44,6 +44,9 @@ public readonly struct SyllableStructure
                 case 'V':
                     slots.Add(new SyllablePatternSlot(NaturalClass.Vowel, inOptional));
                     break;
+                case 'P':
+                    slots.Add(new SyllablePatternSlot(NaturalClass.Plosive, inOptional));
+                    break;
             }
         }
 

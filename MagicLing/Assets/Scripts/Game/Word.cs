@@ -18,6 +18,13 @@ public record Word
         Current = currentWord;
     }
 
+    public static List<Syllable> RandomSyllables(SyllableStructure syllableStructure, int numSyllables)
+    {
+        string word = RandomWord(syllableStructure, numSyllables);
+
+        return Syllable.Syllabify(word, syllableStructure);
+    }
+
     public static string RandomWord(SyllableStructure syllableStructure, int numSyllables)
     {
         string word = "";
