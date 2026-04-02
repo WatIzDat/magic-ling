@@ -25,19 +25,54 @@ public record Word
         return Syllable.Syllabify(word, syllableStructure);
     }
 
+    public static List<Syllable> RandomSyllables(System.Func<string> syllableGenerator, SyllableStructure syllableStructure, int numSyllables)
+    {
+        string word = RandomWord(syllableGenerator, numSyllables);
+
+        return Syllable.Syllabify(word, syllableStructure);
+    }
+
     public static string RandomWord(SyllableStructure syllableStructure, int numSyllables)
     {
-        string word = "";
+        //string word = "";
 
-        for (int i = 0; i < numSyllables; i++)
+        //for (int i = 0; i < numSyllables; i++)
+        //{
+        //    foreach (SyllablePatternSlot slot in syllableStructure.Slots)
+        //    {
+        //        if (slot.IsOptional && Random.value <= 0.5f)
+        //            continue;
+
+        //        word += Rule.RandomLetterOfRegex(slot.Regex);
+        //    }
+        //}
+
+        //return word;
+
+        return RandomWord(() =>
         {
+            string syllable = "";
+
             foreach (SyllablePatternSlot slot in syllableStructure.Slots)
             {
                 if (slot.IsOptional && Random.value <= 0.5f)
                     continue;
 
-                word += Rule.RandomLetterOfNaturalClass(slot.Type);
+                syllable += Rule.RandomLetterOfRegex(slot.Regex);
             }
+
+            return syllable;
+        },
+        numSyllables);
+    }
+
+    public static string RandomWord(System.Func<string> syllableGenerator, int numSyllables)
+    {
+        string word = "";
+
+        for (int i = 0; i < numSyllables; i++)
+        {
+            word += syllableGenerator();
         }
 
         return word;

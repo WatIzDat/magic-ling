@@ -15,6 +15,8 @@ public record Spell
 
     public float Heal { get; }
 
+    public static readonly string[] BlockVowels = new string[] { "i", "o", "u", "e" };
+
     //public Spell(int startIndex, int endIndex, Color color, Effect effect, int nucleusStartIndex, int nucleusEndIndex, Color nucleusColor, Damage block = null)
     //    : this(startIndex, endIndex, color, null, effect, nucleusStartIndex, nucleusEndIndex, nucleusColor, block)
     //{

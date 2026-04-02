@@ -24,7 +24,7 @@ public readonly struct Syllable
 
         for (int i = 0; i < text.Length; i++)
         {
-            if (Rule.NaturalClassToRegex[NaturalClass.Vowel].IsMatch(text[i].ToString()))
+            if (NaturalClass.Vowel.Regex.IsMatch(text[i].ToString()))
             {
                 if (nucleusStart < 0)
                 {
@@ -95,7 +95,7 @@ public readonly struct Syllable
         {
             NaturalClass naturalClass = naturalClasses[i];
 
-            regexStr += Rule.NaturalClassToRegex[naturalClass];
+            regexStr += naturalClass.Regex;
 
             if (i < naturalClasses.Length - 1)
             {

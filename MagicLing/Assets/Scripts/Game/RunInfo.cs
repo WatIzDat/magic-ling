@@ -7,7 +7,7 @@ public static class RunInfo
     public static string SyllableStructureNotation { get; private set; } = "CV(C)";
     public static List<GameCard> Cards { get; } = new();
     public static int MaxHandSize { get; private set; } = 6;
-    public static int Floor { get; private set; } = 1;
+    public static int Floor { get; private set; } = 2;
 
     private const int InitialCardsSize = 10;
 
@@ -23,7 +23,7 @@ public static class RunInfo
 
             NaturalClass naturalClass = NaturalClass.Consonant;
 
-            if (Rule.NaturalClassToRegex[NaturalClass.Vowel].IsMatch(letter.ToString()))
+            if (NaturalClass.Vowel.Regex.IsMatch(letter.ToString()))
             {
                 naturalClass = NaturalClass.Vowel;
             }
@@ -57,9 +57,13 @@ public static class RunInfo
 
             return new List<Opponent>() { new(new CyclingBehavior(enemyActions)) };
         }
-        //else if (Floor <= 3)
-        //{
-        //}
+        else if (Floor <= 3)
+        {
+            return ListUtil.ComposeRandom(
+                2,
+                () => Opponent.CreateBerserker(1, 3, 1, 3, 10f, 20f));
+                //() => Opponent.CreateElementalist);
+        }
 
         return null;
     }

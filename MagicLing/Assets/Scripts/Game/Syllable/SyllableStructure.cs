@@ -39,13 +39,16 @@ public readonly struct SyllableStructure
                     inOptional = false;
                     break;
                 case 'C':
-                    slots.Add(new SyllablePatternSlot(NaturalClass.Consonant, inOptional));
+                    slots.Add(new SyllablePatternSlot(NaturalClass.Consonant.Regex, inOptional));
                     break;
                 case 'V':
-                    slots.Add(new SyllablePatternSlot(NaturalClass.Vowel, inOptional));
+                    slots.Add(new SyllablePatternSlot(NaturalClass.Vowel.Regex, inOptional));
                     break;
                 case 'P':
-                    slots.Add(new SyllablePatternSlot(NaturalClass.Plosive, inOptional));
+                    slots.Add(new SyllablePatternSlot(NaturalClass.Plosive.Regex, inOptional));
+                    break;
+                default:
+                    slots.Add(new SyllablePatternSlot(new Regex(c.ToString()), inOptional));
                     break;
             }
         }
@@ -68,7 +71,7 @@ public readonly struct SyllableStructure
         if (wordPos < word.Length)
         {
             string c = word[wordPos].ToString();
-            bool isMatch = Rule.NaturalClassToRegex[slot.Type].IsMatch(c);
+            bool isMatch = slot.Regex.IsMatch(c);
 
             if (isMatch)
             {

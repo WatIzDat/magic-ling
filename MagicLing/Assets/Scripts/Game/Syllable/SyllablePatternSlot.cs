@@ -1,11 +1,14 @@
+using System.Text.RegularExpressions;
+
 public class SyllablePatternSlot
 {
-    public NaturalClass Type { get; }
+    //public NaturalClass Type { get; }
+    public Regex Regex { get; }
     public bool IsOptional { get; }
 
-    public SyllablePatternSlot(NaturalClass type, bool isOptional)
+    public SyllablePatternSlot(Regex regex, bool isOptional)
     {
-        Type = type;
+        Regex = regex;
         IsOptional = isOptional;
     }
 }
