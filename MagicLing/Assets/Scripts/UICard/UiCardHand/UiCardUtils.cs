@@ -60,16 +60,38 @@ namespace Tools.UI.Card
         //--------------------------------------------------------------------------------------------------------------
 
         #region Operations
+        
+        public static UiCardDisplay InstantiateDisplayCard(GameObject cardPrefab, Transform parent, int count, Vector3 position, GameCard cardType)
+        {
+            //TODO: Consider replace Instantiate by an Object Pool Pattern
+            var cardGo = Instantiate(cardPrefab, parent);
+            cardGo.name = "Card_" + count;
+            var card = cardGo.GetComponent<UiCardDisplay>();
+            card.transform.position = position;
+            card.Card = cardType;
+
+            return card;
+        }
+
+        public static IUiCard InstantiateCard(GameObject cardPrefab, Transform parent, int count, Vector3 position, GameCard cardType)
+        {
+            //TODO: Consider replace Instantiate by an Object Pool Pattern
+            // var cardGo = Instantiate(cardPrefab, parent);
+            // cardGo.name = "Card_" + count;
+            // var card = cardGo.GetComponent<IUiCard>();
+            // card.transform.position = position;
+            // card.Card = cardType;
+
+            IUiCard card = InstantiateDisplayCard(cardPrefab, parent, count, position, cardType).GetComponent<IUiCard>();
+            card.Card = cardType;
+
+            return card;
+        }
 
         [Button]
         public void DrawCard(GameCard cardType)
         {
-            //TODO: Consider replace Instantiate by an Object Pool Pattern
-            var cardGo = Instantiate(cardPrefabCs, gameView);
-            cardGo.name = "Card_" + Count;
-            var card = cardGo.GetComponent<IUiCard>();
-            card.transform.position = deckPosition.position;
-            card.Card = cardType;
+            IUiCard card = InstantiateCard(cardPrefabCs, gameView, Count, deckPosition.position, cardType);
             Count++;
             CardHand.AddCard(card);
         }

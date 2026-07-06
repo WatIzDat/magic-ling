@@ -7,13 +7,16 @@ public static class RunInfo
     public static string SyllableStructureNotation { get; private set; } = "CV(C)";
     public static List<GameCard> Cards { get; } = new();
     public static int MaxHandSize { get; private set; } = 6;
-    public static int Floor { get; private set; } = 2;
+    public static int Floor { get; set; } = 1;
 
-    private const int InitialCardsSize = 10;
+    private const int InitialCardsSize = 6;
+    private const int CardSelectOptionsSize = 5;
 
-    public static void NewRun()
+    public static List<GameCard> NewRun()
     {
         Cards.Clear();
+
+        List<GameCard> cardSelectOptions = new();
 
         ProtoWords = new() { Word.RandomWord(SyllableStructure.Parse(SyllableStructureNotation), 2) };
 
@@ -28,22 +31,35 @@ public static class RunInfo
                 naturalClass = NaturalClass.Vowel;
             }
 
-            Cards.Add(new RuleCard(letter, Rule.RandomLetterOfNaturalClass(naturalClass)));
+            cardSelectOptions.Add(new RuleCard(letter, Rule.RandomLetterOfNaturalClass(naturalClass)));
         }
 
-        int remainingCardsCount = InitialCardsSize - Cards.Count;
+        int remainingCardsCount = CardSelectOptionsSize - cardSelectOptions.Count;
 
         for (int i = 0; i < remainingCardsCount; i++)
         {
+            string letter = Random.Range(0, ProtoWords[0].Length).ToString();
+
             NaturalClass naturalClass = NaturalClass.Consonant;
 
-            if (Random.value <= 0.5f)
+            if (NaturalClass.Vowel.Regex.IsMatch(letter.ToString()))
             {
                 naturalClass = NaturalClass.Vowel;
             }
 
-            Cards.Add(new RuleCard(Rule.RandomLetterOfNaturalClass(naturalClass), Rule.RandomLetterOfNaturalClass(naturalClass)));
+            cardSelectOptions.Add(new RuleCard(letter, Rule.RandomLetterOfNaturalClass(naturalClass)));
+            
+            // NaturalClass naturalClass = NaturalClass.Consonant;
+            //
+            // if (Random.value <= 0.5f)
+            // {
+            //     naturalClass = NaturalClass.Vowel;
+            // }
+            //
+            // Cards.Add(new RuleCard(Rule.RandomLetterOfNaturalClass(naturalClass), Rule.RandomLetterOfNaturalClass(naturalClass)));
         }
+
+        return cardSelectOptions;
     }
 
     public static List<Opponent> GetRandomOpponents()

@@ -36,8 +36,8 @@ namespace Tools.UI.Card
         public string Name => gameObject.name;
         public UiCardParameters CardConfigsParameters => cardConfigsParameters;
         [SerializeField] public UiCardParameters cardConfigsParameters;
-        [SerializeField] private TMP_Text titleText;
-        [SerializeField] private TMP_Text descriptionText;
+        // [SerializeField] private TMP_Text titleText;
+        // [SerializeField] private TMP_Text descriptionText;
         private UiCardHandFsm Fsm { get; set; }
         private Transform MyTransform { get; set; }
         private Collider MyCollider { get; set; }
@@ -55,20 +55,8 @@ namespace Tools.UI.Card
         public bool IsPlayer => transform.CloserEdge(MainCamera, Screen.width, Screen.height) == 1;
 
         //public ICard Card { get; set => { } }
-        private GameCard card;
 
-        public GameCard Card
-        {
-            get { return card; }
-            set 
-            { 
-                card = value;
-
-                titleText.text = card.Title;
-                descriptionText.text = card.Description;
-            }
-        }
-
+        public GameCard Card { get; set; }
 
         #endregion
 

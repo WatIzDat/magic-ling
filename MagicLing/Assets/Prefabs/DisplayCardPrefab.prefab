@@ -382,13 +382,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3921877624254176190}
-  - component: {fileID: 4356121320777355773}
-  - component: {fileID: 3061994033972836288}
+  - component: {fileID: -889610337853034284}
   - component: {fileID: 3245573509686006909}
   - component: {fileID: 7375693086349266152}
   - component: {fileID: 5965555409100244655}
   m_Layer: 5
-  m_Name: CardPrefabPure
+  m_Name: DisplayCardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -411,7 +410,7 @@ Transform:
   - {fileID: 2068662029463280355}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4356121320777355773
+--- !u!114 &-889610337853034284
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -420,24 +419,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3245573509686006908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47e393e6874eebd49966c70fc1a8cd57, type: 3}
+  m_Script: {fileID: 11500000, guid: fb2db6997fc0cad47b27e3f5c19c62af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardConfigsParameters: {fileID: 11400000, guid: f79f21692e2d8a746b39e9a2eadfd5df, type: 2}
   titleText: {fileID: 4746650626200375629}
   descriptionText: {fileID: 6818919797540297911}
---- !u!114 &3061994033972836288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3245573509686006908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 697e3e3789280ae43a26574e6eebca61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &3245573509686006909
 SpriteRenderer:
   m_ObjectHideFlags: 0

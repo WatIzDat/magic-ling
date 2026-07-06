@@ -3,6 +3,7 @@ using System.Linq;
 using TMPro;
 using Tools.UI.Card;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MatchManager : MonoBehaviour
@@ -274,6 +275,15 @@ public class MatchManager : MonoBehaviour
     private void EndTurn()
     {
         match.EndTurn(spells, selectedOpponent);
+
+        if (match.Opponents.Count == 0)
+        {
+            RunInfo.Floor++;
+            
+            SceneManager.LoadScene("SampleScene");
+
+            return;
+        }
 
         foreach (Opponent battler in match.Opponents)
         {
