@@ -424,6 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   titleText: {fileID: 4746650626200375629}
   descriptionText: {fileID: 6818919797540297911}
+  borderSprite: {fileID: 2131234291105158851}
 --- !u!212 &3245573509686006909
 SpriteRenderer:
   m_ObjectHideFlags: 0

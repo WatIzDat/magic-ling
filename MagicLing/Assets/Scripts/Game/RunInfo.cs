@@ -5,14 +5,14 @@ public static class RunInfo
 {   
     public static List<string> ProtoWords { get; private set; }
     public static string SyllableStructureNotation { get; private set; } = "CV(C)";
-    public static List<GameCard> Cards { get; } = new();
+    public static List<GameCard> Cards { get; private set; } = new();
     public static int MaxHandSize { get; private set; } = 6;
     public static int Floor { get; set; } = 1;
 
     private const int InitialCardsSize = 6;
     private const int CardSelectOptionsSize = 5;
 
-    public static List<GameCard> NewRun()
+    public static List<GameCard> InitializeNewRun()
     {
         Cards.Clear();
 
@@ -38,7 +38,7 @@ public static class RunInfo
 
         for (int i = 0; i < remainingCardsCount; i++)
         {
-            string letter = Random.Range(0, ProtoWords[0].Length).ToString();
+            string letter = ProtoWords[0][Random.Range(0, ProtoWords[0].Length)].ToString();
 
             NaturalClass naturalClass = NaturalClass.Consonant;
 
@@ -60,6 +60,25 @@ public static class RunInfo
         }
 
         return cardSelectOptions;
+    }
+
+    public static void StartRun(List<GameCard> cards)
+    {
+        Cards = cards;
+        
+        int remainingCardsCount = InitialCardsSize - Cards.Count;
+
+        for (int i = 0; i < remainingCardsCount; i++)
+        {
+            NaturalClass naturalClass = NaturalClass.Consonant;
+            
+            if (Random.value <= 0.5f)
+            {
+                naturalClass = NaturalClass.Vowel;
+            }
+            
+            Cards.Add(new RuleCard(Rule.RandomLetterOfNaturalClass(naturalClass), Rule.RandomLetterOfNaturalClass(naturalClass)));
+        }
     }
 
     public static List<Opponent> GetRandomOpponents()

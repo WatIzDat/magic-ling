@@ -23,6 +23,8 @@ namespace Tools.UI.Card
 
         public override void OnEnterState()
         {
+            Debug.Log(Handler.Input);
+            
             Handler.Input.OnPointerDown += OnPointerDown;
             Handler.Input.OnPointerEnter += OnPointerEnter;
 
