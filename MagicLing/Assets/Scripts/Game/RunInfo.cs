@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public static class RunInfo
@@ -9,7 +10,7 @@ public static class RunInfo
     public static int MaxHandSize { get; private set; } = 6;
     public static int Floor { get; set; } = 1;
 
-    private const int InitialCardsSize = 6;
+    private const int InitialCardsSize = 3;
     private const int CardSelectOptionsSize = 5;
 
     public static List<GameCard> InitializeNewRun()
@@ -18,7 +19,7 @@ public static class RunInfo
 
         List<GameCard> cardSelectOptions = new();
 
-        ProtoWords = new() { Word.RandomWord(SyllableStructure.Parse(SyllableStructureNotation), 2) };
+        ProtoWords = new() { Word.RandomWord(SyllableStructure.Parse(SyllableStructureNotation), 1) };
 
         foreach (char c in ProtoWords[0])
         {
@@ -83,23 +84,16 @@ public static class RunInfo
 
     public static List<Opponent> GetRandomOpponents()
     {
-        if (Floor == 1)
+        switch (Floor)
         {
-            Syllable syllable = Word.RandomSyllables(SyllableStructure.Parse("PV(P)"), 1)[0];
-            
-            EnemyAction[] enemyActions =
-                new EnemyAction[] { new(new List<Syllable>() { syllable }) };
-
-            return new List<Opponent>() { new(new CyclingBehavior(enemyActions)) };
+            case 1:
+                return new List<Opponent> { Opponent.CreateBasic(1, 1, 1, 1, 3f, 3f, new Regex("[e]")) };
+            case 2:
+                return new List<Opponent> { Opponent.CreateBasic(1, 1, 1, 1, 3f, 3f, NaturalClass.Vowel.Regex) };
+            case 3:
+                return new List<Opponent> { Opponent.CreateBasic(2, 2, 1, 1, 3f, 3f, NaturalClass.Vowel.Regex) };
+            default:
+                return null;
         }
-        else if (Floor <= 3)
-        {
-            return ListUtil.ComposeRandom(
-                2,
-                () => Opponent.CreateBerserker(1, 3, 1, 3, 10f, 20f));
-                //() => Opponent.CreateElementalist);
-        }
-
-        return null;
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public readonly struct SyllableStructure
@@ -71,7 +72,7 @@ public readonly struct SyllableStructure
         if (wordPos < word.Length)
         {
             string c = word[wordPos].ToString();
-            bool isMatch = slot.Regex.IsMatch(c);
+            bool isMatch = slot.Patterns.Any(pattern => pattern.IsMatch(c));
 
             if (isMatch)
             {

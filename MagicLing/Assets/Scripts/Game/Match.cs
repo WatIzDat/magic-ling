@@ -87,13 +87,13 @@ public class Match
             UpdateWord(i, new Word(words[i].Proto));
         }
 
-        int cardsToDraw = RunInfo.MaxHandSize - hand.Count;
+        int cardsToDraw = Mathf.Clamp(RunInfo.Cards.Count - hand.Count, 0, RunInfo.MaxHandSize);
 
         for (int i = 0; i < cardsToDraw; i++)
         {
-            var possibleCards = RunInfo.Cards.Where(card => !hand.Contains(card));
+            List<GameCard> possibleCards = RunInfo.Cards.Where(card => !hand.Contains(card)).ToList();
 
-            GameCard card = possibleCards.ElementAt(UnityEngine.Random.Range(0, possibleCards.Count()));
+            GameCard card = possibleCards.ElementAt(UnityEngine.Random.Range(0, possibleCards.Count));
 
             hand.Add(card);
 

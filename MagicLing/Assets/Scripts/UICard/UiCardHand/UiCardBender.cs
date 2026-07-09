@@ -52,7 +52,7 @@ namespace Tools.UI.Card
             if (cards == null)
                 throw new ArgumentException("Can't bend a card list null");
 
-            if (this.cards == null || cards.Length != this.cards.Length)
+            if ((this.cards == null || cards.Length != this.cards.Length) && cards.Length > 0)
             {
                 cards[^1].Movement.OnFinishMotion += OnBendFinished;
             }

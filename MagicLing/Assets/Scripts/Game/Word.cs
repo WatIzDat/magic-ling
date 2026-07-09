@@ -18,6 +18,11 @@ public record Word
         Current = currentWord;
     }
 
+    public static List<Syllable> RandomSyllables(List<SyllableStructure> syllableStructures, int numSyllables)
+    {
+        return RandomSyllables(syllableStructures[Random.Range(0, syllableStructures.Count)], numSyllables);
+    }
+
     public static List<Syllable> RandomSyllables(SyllableStructure syllableStructure, int numSyllables)
     {
         string word = RandomWord(syllableStructure, numSyllables);
@@ -58,7 +63,7 @@ public record Word
                 if (slot.IsOptional && Random.value <= 0.5f)
                     continue;
 
-                syllable += Rule.RandomLetterOfRegex(slot.Regex);
+                syllable += Rule.RandomLetterOfRegex(slot.Patterns[Random.Range(0, slot.Patterns.Count)]);
             }
 
             return syllable;

@@ -12,6 +12,8 @@ public readonly struct NaturalClass
     public static NaturalClass Affricate = new("[ʦʣ]");
     public static NaturalClass Trill = new("[r]");
     public static NaturalClass Tap = new("[ɾ]");
+
+    // public static NaturalClass DamageConsonant = new("[bdgkptfhsvzlɹ]", isBroad: true);
     //Close
 
     public Regex Regex { get; }
